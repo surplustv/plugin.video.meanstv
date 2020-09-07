@@ -81,7 +81,7 @@ class Collection(object):
 
 def strip_tags(text):
     clean_text = BeautifulSoup(text).get_text(separator=' ')
-    return re.sub(' +', ' ', clean_text)
+    return re.sub('\\s+', ' ', clean_text)
 
 
 def to_category(json):
