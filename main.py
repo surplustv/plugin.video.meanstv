@@ -1,3 +1,4 @@
+import re
 import sys
 from urlparse import parse_qsl
 
@@ -6,6 +7,8 @@ import xbmcgui
 import xbmcplugin
 
 # Get the plugin url in plugin:// notation.
+from bs4 import BeautifulSoup
+
 _url = sys.argv[0]
 # Get the plugin handle as an integer number.
 _handle = int(sys.argv[1])
@@ -31,10 +34,12 @@ class Video(object):
         self.title = json['title']
         self.thumb = json['main_poster_featured']
         self.duration = json['duration']
+        self.description = json['description']
 
     def to_directory_item(self):
         list_item = xbmcgui.ListItem(label=self.title)
         list_item.setInfo('video', {'title': self.title,
+                                    'plot': self.clean_description(),
                                     'duration': self.duration_to_seconds()})
         list_item.setArt({'thumb': self.thumb,
                           'icon': self.thumb,
@@ -49,21 +54,34 @@ class Video(object):
         else:
             return int(array[0]) * 3600 + int(array[1]) * 60 + int(array[2])
 
+    def clean_description(self):
+        return strip_tags(self.description)
+
 
 class Collection(object):
     def __init__(self, json):
         self.id = json['permalink']
         self.title = json['title']
         self.thumb = json['main_poster_featured']
+        self.description = json['description']
 
     def to_directory_item(self):
         list_item = xbmcgui.ListItem(label=self.title)
-        list_item.setInfo('video', {'title': self.title})
+        list_item.setInfo('video', {'title': self.title,
+                                    'plot': self.clean_description()})
         list_item.setArt({'thumb': self.thumb,
                           'icon': self.thumb,
                           'fanart': self.thumb})
         url = _url + '?show=collection&id=' + str(self.id)
         return url, list_item, True
+
+    def clean_description(self):
+        return strip_tags(self.description)
+
+
+def strip_tags(text):
+    clean_text = BeautifulSoup(text).get_text(separator=' ')
+    return re.sub(' +', ' ', clean_text)
 
 
 def to_category(json):
@@ -135,7 +153,7 @@ def router(paramstring):
     params = dict(parse_qsl(paramstring))
     if params:
         if params['show'] == 'category':
-            list_category_contents(params["id"])
+            list_category_contents(params['id'])
         else:
             raise ValueError('Invalid paramstring: {0}!'.format(paramstring))
     list_categories()

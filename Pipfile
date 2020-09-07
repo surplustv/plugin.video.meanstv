@@ -8,6 +8,7 @@ Kodistubs = "*"
 
 [packages]
 requests = "*"
+beautifulsoup4 = "*"
 
 [requires]
 python_version = "2.7"
