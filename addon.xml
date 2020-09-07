@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon id="plugin.video.meanstv"
+version="0.1.0"
+name="Means TV Kodi Plugin"
+provider-name="some_developers">
+<requires>
+  <import addon="xbmc.python" version="2.25.0"/>
+  <import addon="script.module.requests" version="2.4.3"/>
+</requires>
+<extension point="xbmc.python.pluginsource" library="main.py">
+  <provides>video</provides>
+</extension>
+<extension point="xbmc.addon.metadata">
+  <summary lang="en">Means TV Kodi Video Plugin</summary>
+  <description lang="en_GB">Plugin to watch Means TV videos with Kodi</description>
+  <disclaimer lang="en_GB">Unofficial plugin. All videos are owned by means.tv</disclaimer>
+  <assets>
+    <icon>icon.png</icon>
+  </assets>
+  <news>First implementation</news>
+</extension>
+</addon>
