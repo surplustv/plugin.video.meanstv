@@ -48,11 +48,35 @@ class Video(object):
         return url, list_item, False
 
     def duration_to_seconds(self):
-        array = self.duration.split(':')
-        if len(array) == 2:
-            return int(array[0]) * 60 + int(array[1])
-        else:
-            return int(array[0]) * 3600 + int(array[1]) * 60 + int(array[2])
+        return duration_to_seconds(self.duration)
+
+    def clean_description(self):
+        return strip_tags(self.description)
+
+
+class ChapterVideo(object):
+    def __init__(self, json):
+        self.id = json['id']
+        self.position = json['position']
+        self.title = json['title']
+        self.thumb = json['preview_image']
+        self.duration = json['subject']['duration']
+        self.description = json['description']
+
+    def to_directory_item(self):
+        title = str(self.position) + ". " + self.title
+        list_item = xbmcgui.ListItem(label=title)
+        list_item.setInfo('video', {'title': title,
+                                    'plot': self.clean_description(),
+                                    'duration': self.duration_to_seconds()})
+        list_item.setArt({'thumb': self.thumb,
+                          'icon': self.thumb,
+                          'fanart': self.thumb})
+        url = _url + '?show=chapter_video&id=' + str(self.id)
+        return url, list_item, False
+
+    def duration_to_seconds(self):
+        return duration_to_seconds(self.duration)
 
     def clean_description(self):
         return strip_tags(self.description)
@@ -79,9 +103,20 @@ class Collection(object):
         return strip_tags(self.description)
 
 
+def duration_to_seconds(duration):
+    array = duration.split(':')
+    if len(array) == 2:
+        return int(array[0]) * 60 + int(array[1])
+    else:
+        return int(array[0]) * 3600 + int(array[1]) * 60 + int(array[2])
+
+
 def strip_tags(text):
-    clean_text = BeautifulSoup(text).get_text(separator=' ')
-    return re.sub('\\s+', ' ', clean_text)
+    if text:
+        clean_text = BeautifulSoup(text, features='html.parser').get_text(separator=' ')
+        return re.sub('\\s+', ' ', clean_text)
+    else:
+        return text
 
 
 def to_category(json):
@@ -112,6 +147,38 @@ def load_category_contents(category_id):
     r = requests.get(url)
     json_list = r.json()
     return map(to_category_content, json_list)
+
+
+def load_collection(permalink):
+    url = _MEANS_TV_BASE_URL + '/contents/' + permalink
+    r = requests.get(url)
+    return r.json()
+
+
+def to_chapter_video(json):
+    return ChapterVideo(json)
+
+
+def load_chapters(chapters):
+    chapters_str = '&ids[]='.join(map(str, chapters))
+    url = _MEANS_TV_BASE_URL + '/chapters/?ids[]=' + chapters_str
+    r = requests.get(url)
+    json_list = r.json()
+    return map(to_chapter_video, json_list)
+
+
+def list_collection(permalink):
+    """
+    List collection videos
+    """
+    xbmcplugin.setPluginCategory(_handle, 'Category Contents')
+    xbmcplugin.setContent(_handle, 'videos')
+    collection = load_collection(permalink)
+    videos = load_chapters(collection['chapters'])
+    directory_items = map(to_directory_item, videos)
+    xbmcplugin.addDirectoryItems(_handle, directory_items, len(directory_items))
+    xbmcplugin.addSortMethod(_handle, xbmcplugin.SORT_METHOD_LABEL)
+    xbmcplugin.endOfDirectory(_handle)
 
 
 def list_category_contents(category_id):
@@ -154,9 +221,12 @@ def router(paramstring):
     if params:
         if params['show'] == 'category':
             list_category_contents(params['id'])
+        elif params['show'] == 'collection':
+            list_collection(params['id'])
         else:
             raise ValueError('Invalid paramstring: {0}!'.format(paramstring))
-    list_categories()
+    else:
+        list_categories()
 
 
 if __name__ == '__main__':
