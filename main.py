@@ -15,13 +15,54 @@ _MEANS_TV_BASE_URL = 'https://means.tv/api'
 
 class Category(object):
     def __init__(self, json):
-        self.id = json["id"]
-        self.title = json["title"]
+        self.id = json['id']
+        self.title = json['title']
 
     def to_directory_item(self):
         list_item = xbmcgui.ListItem(label=self.title)
         list_item.setInfo('video', {'title': self.title})
-        url = _url + "?action=category&id=" + str(self.id)
+        url = _url + '?show=category&id=' + str(self.id)
+        return url, list_item, True
+
+
+class Video(object):
+    def __init__(self, json):
+        self.id = json['permalink']
+        self.title = json['title']
+        self.thumb = json['main_poster_featured']
+        self.duration = json['duration']
+
+    def to_directory_item(self):
+        list_item = xbmcgui.ListItem(label=self.title)
+        list_item.setInfo('video', {'title': self.title,
+                                    'duration': self.duration_to_seconds()})
+        list_item.setArt({'thumb': self.thumb,
+                          'icon': self.thumb,
+                          'fanart': self.thumb})
+        url = _url + '?show=video&id=' + str(self.id)
+        return url, list_item, False
+
+    def duration_to_seconds(self):
+        array = self.duration.split(':')
+        if len(array) == 2:
+            return int(array[0]) * 60 + int(array[1])
+        else:
+            return int(array[0]) * 3600 + int(array[1]) * 60 + int(array[2])
+
+
+class Collection(object):
+    def __init__(self, json):
+        self.id = json['permalink']
+        self.title = json['title']
+        self.thumb = json['main_poster_featured']
+
+    def to_directory_item(self):
+        list_item = xbmcgui.ListItem(label=self.title)
+        list_item.setInfo('video', {'title': self.title})
+        list_item.setArt({'thumb': self.thumb,
+                          'icon': self.thumb,
+                          'fanart': self.thumb})
+        url = _url + '?show=collection&id=' + str(self.id)
         return url, list_item, True
 
 
@@ -34,10 +75,38 @@ def to_directory_item(item):
 
 
 def load_categories():
-    url = _MEANS_TV_BASE_URL + "/categories"
+    url = _MEANS_TV_BASE_URL + '/categories'
     r = requests.get(url)
     json_list = r.json()
     return map(to_category, json_list)
+
+
+def to_category_content(item):
+    content_type = item['content_type']
+    if content_type == 'video':
+        return Video(item)
+    else:
+        return Collection(item)
+
+
+def load_category_contents(category_id):
+    url = _MEANS_TV_BASE_URL + '/contents?type=category_preview&category_id=' + str(category_id)
+    r = requests.get(url)
+    json_list = r.json()
+    return map(to_category_content, json_list)
+
+
+def list_category_contents(category_id):
+    """
+    List contents of a category
+    """
+    xbmcplugin.setPluginCategory(_handle, 'Category Contents')
+    xbmcplugin.setContent(_handle, 'videos')
+    contents = load_category_contents(category_id)
+    directory_items = map(to_directory_item, contents)
+    xbmcplugin.addDirectoryItems(_handle, directory_items, len(directory_items))
+    xbmcplugin.addSortMethod(_handle, xbmcplugin.SORT_METHOD_LABEL)
+    xbmcplugin.endOfDirectory(_handle)
 
 
 def list_categories():
@@ -64,7 +133,11 @@ def router(paramstring):
     # Parse a URL-encoded paramstring to the dictionary of
     # {<parameter>: <value>} elements
     params = dict(parse_qsl(paramstring))
-    # Check the parameters passed to the plugin
+    if params:
+        if params['show'] == 'category':
+            list_category_contents(params["id"])
+        else:
+            raise ValueError('Invalid paramstring: {0}!'.format(paramstring))
     list_categories()
 
 
