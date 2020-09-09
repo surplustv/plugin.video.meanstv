@@ -3,8 +3,10 @@ import sys
 from urlparse import parse_qsl
 
 import requests
+import xbmc
 import xbmcgui
 import xbmcplugin
+import xbmcaddon
 
 # Get the plugin url in plugin:// notation.
 from bs4 import BeautifulSoup
@@ -13,7 +15,15 @@ _url = sys.argv[0]
 # Get the plugin handle as an integer number.
 _handle = int(sys.argv[1])
 
+_STREAM_PROTOCOL = 'hls'
 _MEANS_TV_BASE_URL = 'https://means.tv/api'
+_KODI_VERSION_MAJOR = int(xbmc.getInfoLabel('System.BuildVersion').split('.')[0])
+_ADDON = xbmcaddon.Addon(id='plugin.video.meanstv')
+
+if _KODI_VERSION_MAJOR >= 19:
+    _INPUTSTREAM_PROPERTY = 'inputstream'
+else:
+    _INPUTSTREAM_PROPERTY = 'inputstreamaddon'
 
 
 class Category(object):
@@ -44,6 +54,7 @@ class Video(object):
         list_item.setArt({'thumb': self.thumb,
                           'icon': self.thumb,
                           'fanart': self.thumb})
+        list_item.setProperty('IsPlayable', 'true')
         url = _url + '?show=video&id=' + str(self.id)
         return url, list_item, False
 
@@ -72,6 +83,7 @@ class ChapterVideo(object):
         list_item.setArt({'thumb': self.thumb,
                           'icon': self.thumb,
                           'fanart': self.thumb})
+        list_item.setProperty('IsPlayable', 'true')
         url = _url + '?show=chapter_video&id=' + str(self.id)
         return url, list_item, False
 
@@ -159,12 +171,40 @@ def to_chapter_video(json):
     return ChapterVideo(json)
 
 
+def load_chapter_with_credentials(chapter_id):
+    url = _MEANS_TV_BASE_URL + '/chapters/?ids[]=' + str(chapter_id)
+    cookies = {'remember_user_token': get_token()}
+    r = requests.get(url, cookies=cookies)
+    return r.json()[0]
+
+
 def load_chapters(chapters):
     chapters_str = '&ids[]='.join(map(str, chapters))
     url = _MEANS_TV_BASE_URL + '/chapters/?ids[]=' + chapters_str
     r = requests.get(url)
     json_list = r.json()
     return map(to_chapter_video, json_list)
+
+
+def show_chapter_video(chapter_id):
+    chapter = load_chapter_with_credentials(chapter_id)
+    url = chapter['subject']['versions']['hls']
+    try:
+        import inputstreamhelper
+        is_helper = inputstreamhelper.Helper('mpd', drm='widevine')
+        if is_helper.check_inputstream():
+            play_item = xbmcgui.ListItem(path=url)
+            play_item.setProperty('inputstreamaddon','inputstream.adaptive')
+            play_item.setProperty('inputstream.adaptive.manifest_type','hls')
+            play_item.setProperty(_INPUTSTREAM_PROPERTY, is_helper.inputstream_addon)
+            xbmcplugin.setResolvedUrl(_handle, True, play_item)
+    except Exception as e:
+        xbmc.log('Failed to load inputstream helper: ' + e.message)
+
+
+def show_video(permalink):
+    collection = load_collection(permalink)
+    show_chapter_video(collection['chapters'][0])
 
 
 def list_collection(permalink):
@@ -207,6 +247,21 @@ def list_categories():
     xbmcplugin.endOfDirectory(_handle)
 
 
+def get_credentials():
+    email = _ADDON.getSetting('email')
+    password = _ADDON.getSetting('password')
+    return email, password
+
+
+def get_token():
+    (email, password) = get_credentials()
+    url = _MEANS_TV_BASE_URL + '/sessions'
+    r = requests.post(url, json={'email': email, 'password': password})
+    if r.status_code >= 400:
+        raise ValueError('Unexpected status code {0}'.format(str(r.status_code)))
+    return r.cookies['remember_user_token']
+
+
 def router(paramstring):
     """
     Router function that calls other functions
@@ -223,6 +278,10 @@ def router(paramstring):
             list_category_contents(params['id'])
         elif params['show'] == 'collection':
             list_collection(params['id'])
+        elif params['show'] == 'video':
+            show_video(params['id'])
+        elif params['show'] == 'chapter_video':
+            show_chapter_video(params['id'])
         else:
             raise ValueError('Invalid paramstring: {0}!'.format(paramstring))
     else:
