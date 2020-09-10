@@ -18,7 +18,7 @@ _handle = int(sys.argv[1])
 _STREAM_PROTOCOL = 'hls'
 _MEANS_TV_BASE_URL = 'https://means.tv/api'
 _KODI_VERSION_MAJOR = int(xbmc.getInfoLabel('System.BuildVersion').split('.')[0])
-_ADDON = xbmcaddon.Addon(id='plugin.video.meanstv')
+_ADDON = xbmcaddon.Addon()
 
 if _KODI_VERSION_MAJOR >= 19:
     _INPUTSTREAM_PROPERTY = 'inputstream'
