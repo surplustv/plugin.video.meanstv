@@ -1,0 +1,7 @@
+[BASIC]
+
+good-names=id
+
+[DESIGN]
+
+min-public-methods=1
