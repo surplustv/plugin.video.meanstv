@@ -195,6 +195,11 @@ def to_category(json):
 
 
 def to_directory_item(item):
+    """
+    Convert arbitrary item to a directory item tuple
+    :param item: object any class
+    :return: directory item tuple
+    """
     return item.to_directory_item()
 
 
