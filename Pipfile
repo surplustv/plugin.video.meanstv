@@ -5,6 +5,7 @@ verify_ssl = true
 
 [dev-packages]
 Kodistubs = "*"
+pylint = "*"
 
 [packages]
 requests = "*"
@@ -12,3 +13,6 @@ beautifulsoup4 = "*"
 
 [requires]
 python_version = "2.7"
+
+[scripts]
+lint = "pylint main.py"
