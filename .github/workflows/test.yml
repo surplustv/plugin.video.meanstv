@@ -18,3 +18,4 @@ jobs:
     - uses: dschep/install-pipenv-action@v1
     - run: pipenv install -d
     - run: pipenv run lint
+    - run: pipenv run test
