@@ -15,4 +15,5 @@ beautifulsoup4 = "*"
 python_version = "2.7"
 
 [scripts]
-lint = "pylint main.py"
+lint = "pylint main.py resources"
+test = "python -m unittest discover"
