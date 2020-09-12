@@ -7,7 +7,7 @@ import xbmc
 import xbmcgui
 import xbmcplugin
 
-import resources.lib.api as api
+from resources.lib import api
 from resources.lib.model import Category, Video, Collection, ChapterVideo
 
 # Get the plugin handle as an integer number.
