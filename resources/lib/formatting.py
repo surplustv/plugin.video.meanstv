@@ -1,0 +1,33 @@
+"""
+Helper module for formatting input from means TV
+"""
+import re
+
+from bs4 import BeautifulSoup
+
+
+def duration_to_seconds(duration):
+    """
+    Convert duration string to seconds
+    :param duration: as string (either 00:00 or 00:00:00)
+    :return: duration in seconds :class:`int` or None if it's in the wrong format
+    """
+    if not re.match("^\\d\\d:\\d\\d(:\\d\\d)?$", duration):
+        return None
+
+    array = duration.split(':')
+    if len(array) == 2:
+        return int(array[0]) * 60 + int(array[1])
+    return int(array[0]) * 3600 + int(array[1]) * 60 + int(array[2])
+
+
+def strip_tags(text):
+    """
+    Remove tags from text
+    :param text: string with html markup
+    :return: text without html markup
+    """
+    if text:
+        clean_text = BeautifulSoup(text, features='html.parser').get_text(separator=' ')
+        return re.sub('\\s+', ' ', clean_text)
+    return text
