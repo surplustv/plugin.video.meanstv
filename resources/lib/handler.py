@@ -8,7 +8,6 @@ import xbmcgui
 import xbmcplugin
 
 from resources.lib import api
-from resources.lib.model import Category, Video, Collection, ChapterVideo
 
 # Get the plugin handle as an integer number.
 _HANDLE = int(sys.argv[1])
@@ -20,45 +19,6 @@ if _KODI_VERSION_MAJOR >= 19:
     _INPUTSTREAM_PROPERTY = 'inputstream'
 else:
     _INPUTSTREAM_PROPERTY = 'inputstreamaddon'
-
-
-def to_category(json):
-    """
-    Convert category json to :class:`Category`
-    :param json: category as json
-    :return: :class:`Category`
-    """
-    return Category(json)
-
-
-def to_directory_item(item):
-    """
-    Convert arbitrary item to a directory item tuple
-    :param item: object any class
-    :return: directory item tuple
-    """
-    return item.to_directory_item()
-
-
-def to_category_content(item):
-    """
-    Conver json list item from category content to video or collection
-    :param item: category content item (json)
-    :return: depending on content type :class:`Video` and :class:`Collection`
-    """
-    content_type = item['content_type']
-    if content_type == 'video':
-        return Video(item)
-    return Collection(item)
-
-
-def to_chapter_video(json):
-    """
-    Convert json to :class:`ChapterVideo`
-    :param json: map of json content
-    :return: :class:`ChapterVideo`
-    """
-    return ChapterVideo(json)
 
 
 def show_chapter_video(chapter_id):
@@ -97,8 +57,7 @@ def list_collection(permalink):
     xbmcplugin.setPluginCategory(_HANDLE, 'Category Contents')
     xbmcplugin.setContent(_HANDLE, 'videos')
     collection = api.load_collection(permalink)
-    json_list = api.load_chapters(collection['chapters'])
-    videos = map(to_chapter_video, json_list)
+    videos = api.load_chapters(collection['chapters'])
     directory_items = map(to_directory_item, videos)
     xbmcplugin.addDirectoryItems(_HANDLE, directory_items, len(directory_items))
     xbmcplugin.addSortMethod(_HANDLE, xbmcplugin.SORT_METHOD_LABEL)
@@ -111,8 +70,7 @@ def list_category_contents(category_id):
     """
     xbmcplugin.setPluginCategory(_HANDLE, 'Category Contents')
     xbmcplugin.setContent(_HANDLE, 'videos')
-    json_list = api.load_category_contents(category_id)
-    contents = map(to_category_content, json_list)
+    contents = api.load_category_contents(category_id)
     directory_items = map(to_directory_item, contents)
     xbmcplugin.addDirectoryItems(_HANDLE, directory_items, len(directory_items))
     xbmcplugin.addSortMethod(_HANDLE, xbmcplugin.SORT_METHOD_LABEL)
@@ -125,9 +83,17 @@ def list_categories():
     """
     xbmcplugin.setPluginCategory(_HANDLE, 'Categories')
     xbmcplugin.setContent(_HANDLE, 'videos')
-    json_list = api.load_categories()
-    categories = map(to_category, json_list)
+    categories = api.load_categories()
     directory_items = map(to_directory_item, categories)
     xbmcplugin.addDirectoryItems(_HANDLE, directory_items, len(directory_items))
     xbmcplugin.addSortMethod(_HANDLE, xbmcplugin.SORT_METHOD_LABEL)
     xbmcplugin.endOfDirectory(_HANDLE)
+
+
+def to_directory_item(item):
+    """
+    Convert arbitrary item to a directory item tuple
+    :param item: object any class
+    :return: directory item tuple
+    """
+    return item.to_directory_item()
