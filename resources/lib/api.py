@@ -9,15 +9,16 @@ from resources.lib.model import Video, Collection, ChapterVideo, Category
 _MEANS_TV_BASE_URL = 'https://means.tv/api'
 
 
-def load_collection(permalink):
+def load_chapter_ids_of_collection(permalink):
     """
-    Load collection from API
+    Loads chapter IDs of collection from API
     :param permalink: permalink id of collection
-    :return: mixed list of :class:`Collection` and `Video`
+    :return: list of int
     """
     url = _MEANS_TV_BASE_URL + '/contents/' + permalink
     response = requests.get(url)
-    return response.json()
+    json = response.json()
+    return json['chapters']
 
 
 def load_chapter_with_credentials(chapter_id):
