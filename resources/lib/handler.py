@@ -46,8 +46,8 @@ def show_video(permalink):
     Show a single video (without collection) in kodi
     :param permalink: permalink id of the video
     """
-    collection = api.load_collection(permalink)
-    show_chapter_video(collection['chapters'][0])
+    chapter_ids = api.load_chapter_ids_of_collection(permalink)
+    show_chapter_video(chapter_ids[0])
 
 
 def list_collection(permalink):
@@ -56,8 +56,8 @@ def list_collection(permalink):
     """
     xbmcplugin.setPluginCategory(_HANDLE, 'Category Contents')
     xbmcplugin.setContent(_HANDLE, 'videos')
-    collection = api.load_collection(permalink)
-    videos = api.load_chapters(collection['chapters'])
+    chapter_ids = api.load_chapter_ids_of_collection(permalink)
+    videos = api.load_chapters(chapter_ids)
     directory_items = map(to_directory_item, videos)
     xbmcplugin.addDirectoryItems(_HANDLE, directory_items, len(directory_items))
     xbmcplugin.addSortMethod(_HANDLE, xbmcplugin.SORT_METHOD_LABEL)
