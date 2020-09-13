@@ -26,3 +26,9 @@ Linting the code
 ```bash
 pipenv run lint
 ```
+
+Running the unit tests
+
+```bash
+pipenv run test
+```
