@@ -23,10 +23,10 @@ def load_chapter_ids_of_collection(permalink):
 
 def load_stream_url_of_chapter(chapter_id, token):
     """
-    Loads the stream URL of a single chapter while logged in
+    Loads the stream URL of a single chapter while being logged in
     :param chapter_id: id of single chapter
     :param token: login token
-    :return: :class:`ChapterVideo`
+    :return: str
     """
     url = _MEANS_TV_BASE_URL + '/chapters/?ids[]=' + str(chapter_id)
     cookies = {'remember_user_token': token}
