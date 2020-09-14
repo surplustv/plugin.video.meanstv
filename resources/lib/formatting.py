@@ -3,9 +3,6 @@ Helper module for formatting input from means TV
 """
 import re
 
-from bs4 import BeautifulSoup
-
-
 def duration_to_seconds(duration):
     """
     Convert duration string to seconds
@@ -28,6 +25,9 @@ def strip_tags(text):
     :return: text without html markup
     """
     if text:
-        clean_text = BeautifulSoup(text, features='html.parser').get_text(separator=' ')
-        return re.sub('\\s+', ' ', clean_text)
-    return text
+        clean_text = re.sub('<[^<]+?>', ' ', text)
+        clean_text = clean_text.strip()
+        clean_text = re.sub('\\s+', ' ', clean_text.strip())
+        return clean_text
+    else:
+        return text
