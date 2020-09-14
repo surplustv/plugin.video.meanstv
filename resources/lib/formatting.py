@@ -29,5 +29,4 @@ def strip_tags(text):
         clean_text = clean_text.strip()
         clean_text = re.sub('\\s+', ' ', clean_text.strip())
         return clean_text
-    else:
-        return text
+    return text
