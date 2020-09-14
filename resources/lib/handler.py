@@ -26,8 +26,8 @@ def show_chapter_video(chapter_id):
     Show a video that is a chapter in the collection in kodi
     :param chapter_id: id of the chapter in the collection
     """
-    chapter = api.load_chapter_with_credentials(chapter_id)
-    url = chapter['subject']['versions']['hls']
+    token = api.get_token()
+    url = api.load_stream_url_of_chapter(chapter_id, token)
     try:
         import inputstreamhelper
         is_helper = inputstreamhelper.Helper('mpd', drm='widevine')
