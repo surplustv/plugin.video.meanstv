@@ -6,6 +6,7 @@ verify_ssl = true
 [dev-packages]
 Kodistubs = "*"
 pylint = "*"
+requests-mock = "*"
 
 [packages]
 requests = "*"
@@ -16,3 +17,4 @@ python_version = "2.7"
 [scripts]
 lint = "pylint main.py resources"
 test = "python -m unittest discover"
+it = "python -m unittest discover -p 'it_*.py'"
