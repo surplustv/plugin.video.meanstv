@@ -1,0 +1,18 @@
+
+name: Integration test
+
+on:
+  schedule:
+    - cron: "* 0 * * *"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v1
+      with:
+        python-version: '2.7'
+    - uses: dschep/install-pipenv-action@v1
+    - run: pipenv install -d
+    - run: pipenv run it
