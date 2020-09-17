@@ -8,6 +8,7 @@ import xbmcgui
 import xbmcplugin
 
 from resources.lib import api
+from resources.lib import settings
 
 # Get the plugin handle as an integer number.
 _HANDLE = int(sys.argv[1])
@@ -26,7 +27,8 @@ def show_chapter_video(chapter_id):
     Show a video that is a chapter in the collection in kodi
     :param chapter_id: id of the chapter in the collection
     """
-    token = api.get_token()
+    (email, password) = settings.get_credentials()
+    token = api.get_token(email, password)
     url = api.load_stream_url_of_chapter(chapter_id, token)
     try:
         import inputstreamhelper
