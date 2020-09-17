@@ -44,15 +44,16 @@ def show_chapter_video(chapter_id):
 
 def login():
     """
-    Trys to get a token from api with credentials from settings. Shows error message if not successfull.
+    Trys to get a token from api with credentials from settings.
+    Shows error message if not successfull.
     :return token or None if not successfull
     """
     (email, password) = settings.get_credentials()
-    try: 
+    try:
         return api.get_token(email, password)
     except api.LoginError as err:
         msg = str(err)
-    except:
+    except Exception:
         msg = "Unexpected Error"
     dialog = xbmcgui.Dialog()
     dialog.notification('Login failed', msg, xbmcgui.NOTIFICATION_ERROR, 5000, True)

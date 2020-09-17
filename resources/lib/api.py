@@ -81,18 +81,18 @@ def get_token(email, password):
     :param email: login email address
     :param password: login password
     :return: token string
-    :raises LoginError: when login failed due to invalid credentials 
-    :raises ValueError: when an unexpected status code is returned by API 
+    :raises LoginError: when login failed due to invalid credentials
+    :raises ValueError: when an unexpected status code is returned by API
     """
     url = _MEANS_TV_BASE_URL + '/sessions'
     response = requests.post(url, json={'email': email, 'password': password})
     if response.status_code >= 400:
         if response.status_code == 422:
-            try: 
+            try:
                 json = response.json()
-            except:
+            except ValueError:
                 json = dict()
-            if ('email' in json and isinstance(json['email'], list) and len(json['email']) > 0):
+            if ('email' in json and isinstance(json['email'], list) and json['email']):
                 raise LoginError(json['email'][0])
         raise ValueError('Unexpected status code {0}'.format(str(response.status_code)))
     return response.cookies['remember_user_token']
