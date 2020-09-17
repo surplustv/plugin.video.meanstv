@@ -53,7 +53,7 @@ def login():
         return api.get_token(email, password)
     except api.LoginError as err:
         msg = str(err)
-    except Exception:
+    except Exception: # pylint: disable=broad-except
         msg = "Unexpected Error"
     dialog = xbmcgui.Dialog()
     dialog.notification('Login failed', msg, xbmcgui.NOTIFICATION_ERROR, 5000, True)
