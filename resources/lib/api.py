@@ -92,8 +92,8 @@ def get_token(email, password):
                 json = response.json()
             except:
                 json = dict()
-            if ('email' in json):
-                raise LoginError(json['email'])
+            if ('email' in json and isinstance(json['email'], list) and len(json['email']) > 0):
+                raise LoginError(json['email'][0])
         raise ValueError('Unexpected status code {0}'.format(str(response.status_code)))
     return response.cookies['remember_user_token']
 
