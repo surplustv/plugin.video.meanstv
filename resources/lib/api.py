@@ -88,13 +88,11 @@ def get_token(email, password):
     response = requests.post(url, json={'email': email, 'password': password})
     if response.status_code >= 400:
         if response.status_code == 422:
-            print(response.text)
             try: 
                 json = response.json()
             except:
                 json = dict()
             if ('email' in json):
-                print(json['email'])
                 raise LoginError(json['email'])
         raise ValueError('Unexpected status code {0}'.format(str(response.status_code)))
     return response.cookies['remember_user_token']
