@@ -8,6 +8,11 @@ from resources.lib.model import Video, Collection, ChapterVideo, Category
 
 _MEANS_TV_BASE_URL = 'https://means.tv/api'
 
+class LoginError(Exception):
+    """
+    Raised when login fails due to invalid credentials
+    """
+    pass
 
 def load_chapter_ids_of_collection(permalink):
     """
@@ -75,11 +80,22 @@ def get_token():
     """
     Retrieve user token from api through logging in
     :return: token string
+    :raises LoginError: when login failed due to invalid credentials 
+    :raises ValueError: when an unexpected status code is returned by means.tv 
     """
     (email, password) = settings.get_credentials()
     url = _MEANS_TV_BASE_URL + '/sessions'
     response = requests.post(url, json={'email': email, 'password': password})
     if response.status_code >= 400:
+        if response.status_code == 422:
+            print(response.text)
+            try: 
+                json = response.json()
+            except:
+                json = dict()
+            if ('email' in json):
+                print(json['email'])
+                raise LoginError(json['email'])
         raise ValueError('Unexpected status code {0}'.format(str(response.status_code)))
     return response.cookies['remember_user_token']
 
