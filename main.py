@@ -29,7 +29,7 @@ def router(paramstring):
             handler.show_video(params['id'])
         elif params['show'] == 'chapter_video':
             handler.show_chapter_video(params['id'])
-        elif params['show'] == 'search_dialog':
+        elif params['show'] == 'search':
             handler.search()
         else:
             raise ValueError('Invalid paramstring: {0}!'.format(paramstring))

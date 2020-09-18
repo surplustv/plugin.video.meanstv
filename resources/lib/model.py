@@ -152,5 +152,5 @@ class SearchItem(object):
         search_item = xbmcgui.ListItem(label='Search')
         search_item.setInfo('video', {'title': 'Search'})
         # list_item.setProperty('IsPlayable', 'true')
-        url = _URL + '?show=search_dialog'
+        url = _URL + '?show=search'
         return url, search_item, True
