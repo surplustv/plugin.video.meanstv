@@ -9,6 +9,7 @@ import xbmcplugin
 
 from resources.lib import api
 from resources.lib import settings
+from resources.lib.model import SearchItem
 
 # Get the plugin handle as an integer number.
 _HANDLE = int(sys.argv[1])
@@ -105,6 +106,32 @@ def list_category_contents(category_id):
     xbmcplugin.endOfDirectory(_HANDLE)
 
 
+def search():
+    """
+    Show user search dialog and perform search if they enter a query
+    :return:
+    """
+    keyboard = xbmc.Keyboard('', 'Search for', False)
+    keyboard.setDefault('')
+    keyboard.doModal()
+
+    query = keyboard.getText()
+    if keyboard.isConfirmed() and query:
+        list_search_results(query)
+
+
+def list_search_results(query):
+    """
+    Get search results and show them
+    """
+    xbmcplugin.setPluginCategory(_HANDLE, 'Search results')
+    xbmcplugin.setContent(_HANDLE, 'videos')
+    contents = api.get_search_results(query)
+    directory_items = map(to_directory_item, contents)
+    xbmcplugin.addDirectoryItems(_HANDLE, directory_items, len(directory_items))
+    xbmcplugin.endOfDirectory(_HANDLE)
+
+
 def list_categories():
     """
     List all categories
@@ -112,9 +139,9 @@ def list_categories():
     xbmcplugin.setPluginCategory(_HANDLE, 'Categories')
     xbmcplugin.setContent(_HANDLE, 'videos')
     categories = api.load_categories()
+    categories.insert(0, SearchItem())
     directory_items = map(to_directory_item, categories)
     xbmcplugin.addDirectoryItems(_HANDLE, directory_items, len(directory_items))
-    xbmcplugin.addSortMethod(_HANDLE, xbmcplugin.SORT_METHOD_LABEL)
     xbmcplugin.endOfDirectory(_HANDLE)
 
 

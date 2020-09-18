@@ -138,3 +138,19 @@ class Category(object):
         list_item.setInfo('video', {'title': self.title})
         url = _URL + '?show=category&id=' + str(self.id)
         return url, list_item, True
+
+
+class SearchItem(object):
+    """
+    Search item in listing to start search dialog
+    """
+
+    def to_directory_item(self):  # pylint: disable=no-self-use
+        """
+        :return: directory item tuple
+        """
+        search_item = xbmcgui.ListItem(label='Search')
+        search_item.setInfo('video', {'title': 'Search'})
+        # list_item.setProperty('IsPlayable', 'true')
+        url = _URL + '?show=search_dialog'
+        return url, search_item, True

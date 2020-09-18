@@ -13,6 +13,14 @@ class LoginError(Exception):
     """
     pass
 
+
+class ApiError(Exception):
+    """
+    Raised when the API behaves in some unexpected way
+    """
+    pass
+
+
 def load_chapter_ids_of_collection(permalink):
     """
     Loads chapter IDs of collection from API
@@ -73,6 +81,40 @@ def load_categories():
     response = requests.get(url)
     json_list = response.json()
     return map(to_category, json_list)
+
+
+def get_search_results(query):
+    """
+    Get search results for a query
+    :param query: search term
+    :return: list of :class:`Collection` or :class:`Video`
+    """
+    results = []
+    done = False
+    page = 1
+    while not done:
+        results_for_page = _get_search_results_for_page(query, page)
+        if results_for_page:
+            results.extend(results_for_page)
+        else:
+            done = True
+        page += 1
+    return map(to_category_content, results)
+
+
+def _get_search_results_for_page(query, page):
+    """
+    Get search results for a query and a specific page
+    :param query: search term
+    :param page: page number of search results
+    :return: list of json
+    """
+    params = {'search': query, 'page': page}
+    url = _MEANS_TV_BASE_URL + '/contents'
+    response = requests.get(url, params=params)
+    if response.status_code == 200:
+        return response.json()
+    return ApiError("API returned unknown status code: {0}".format(response.status_code))
 
 
 def get_token(email, password):
