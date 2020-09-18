@@ -1,7 +1,7 @@
 from __builtin__ import isinstance
 from unittest import TestCase
 
-from resources.lib.api import load_chapter_ids_of_collection, load_chapters
+from resources.lib.api import load_chapter_ids_of_collection, load_chapters, get_token, LoginError
 from resources.lib.model import ChapterVideo
 
 
@@ -35,3 +35,12 @@ class LoadChapterDetailsIntegrationTestCase(TestCase):
         self.assertEquals(chapters[5].position, 6)
         self.assertEquals(chapters[6].title, 'Episode 7 - Oakland')
         self.assertEquals(chapters[6].position, 7)
+
+
+class GetTokenTestCase(TestCase):
+    
+    def test_raise_login_exception(self):
+        # Only works if error response by means.tv is as expected
+        self.assertRaises(LoginError, lambda: get_token('no@valid.cr', 'edentials'))
+        self.assertRaises(LoginError, lambda: get_token('', ''))
+        self.assertRaises(LoginError, lambda: get_token(None, None))

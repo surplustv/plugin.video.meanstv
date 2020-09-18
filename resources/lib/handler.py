@@ -8,6 +8,7 @@ import xbmcgui
 import xbmcplugin
 
 from resources.lib import api
+from resources.lib import settings
 
 # Get the plugin handle as an integer number.
 _HANDLE = int(sys.argv[1])
@@ -21,13 +22,49 @@ else:
     _INPUTSTREAM_PROPERTY = 'inputstreamaddon'
 
 
+def show_video(permalink):
+    """
+    Show a single video (without collection) in kodi
+    :param permalink: permalink id of the video
+    """
+    chapter_ids = api.load_chapter_ids_of_collection(permalink)
+    show_chapter_video(chapter_ids[0])
+
+
 def show_chapter_video(chapter_id):
     """
     Show a video that is a chapter in the collection in kodi
     :param chapter_id: id of the chapter in the collection
     """
-    token = api.get_token()
-    url = api.load_stream_url_of_chapter(chapter_id, token)
+    token = login()
+    if token is not None:
+        url = api.load_stream_url_of_chapter(chapter_id, token)
+        play(url)
+
+
+def login():
+    """
+    Trys to get a token from api with credentials from settings.
+    Shows error message if not successfull.
+    :return token or None if not successfull
+    """
+    (email, password) = settings.get_credentials()
+    try:
+        return api.get_token(email, password)
+    except api.LoginError as err:
+        msg = str(err)
+    except Exception: # pylint: disable=broad-except
+        msg = "Unexpected Error"
+    dialog = xbmcgui.Dialog()
+    dialog.notification('Login failed', msg, xbmcgui.NOTIFICATION_ERROR, 5000, True)
+    return None
+
+
+def play(url):
+    """
+    Starts playing a video from a stream url
+    :param url: stream url
+    """
     try:
         import inputstreamhelper
         is_helper = inputstreamhelper.Helper('mpd', drm='widevine')
@@ -37,17 +74,8 @@ def show_chapter_video(chapter_id):
             play_item.setProperty('inputstream.adaptive.manifest_type', 'hls')
             play_item.setProperty(_INPUTSTREAM_PROPERTY, is_helper.inputstream_addon)
             xbmcplugin.setResolvedUrl(_HANDLE, True, play_item)
-    except ImportError as exception:
-        xbmc.log('Failed to load inputstream helper: ' + exception.message)
-
-
-def show_video(permalink):
-    """
-    Show a single video (without collection) in kodi
-    :param permalink: permalink id of the video
-    """
-    chapter_ids = api.load_chapter_ids_of_collection(permalink)
-    show_chapter_video(chapter_ids[0])
+    except ImportError as err:
+        xbmc.log('Failed to load inputstream helper: ' + err.message)
 
 
 def list_collection(permalink):
