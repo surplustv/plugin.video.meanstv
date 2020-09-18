@@ -4,7 +4,7 @@ version="0.1.0"
 name="Means TV Kodi Plugin"
 provider-name="some_developers">
 <requires>
-  <import addon="xbmc.python" version="2.25.0"/>
+  <import addon="xbmc.python" version="2.26.0"/>
   <import addon="script.module.requests" version="2.4.3"/>
   <import addon="script.module.inputstreamhelper" version="0.5.0"/>
 </requires>
