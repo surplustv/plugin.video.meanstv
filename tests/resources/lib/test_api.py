@@ -5,11 +5,14 @@ from unittest import TestCase
 
 import requests_mock
 
-from resources.lib.api import load_chapter_ids_of_collection, load_chapters
-from resources.lib.model import ChapterVideo
+from resources.lib.api import load_chapter_ids_of_collection, load_chapters, get_search_results
+from resources.lib.model import ChapterVideo, Collection, Video
 
 _LATM_CONTENTS_JSON = os.path.join(os.path.dirname(__file__), 'latm_contents.json')
 _LATM_CHAPTERS_JSON = os.path.join(os.path.dirname(__file__), 'latm_chapters.json')
+_SEARCH_RESULTS_1_JSON = os.path.join(os.path.dirname(__file__), 'search_results_page1.json')
+_SEARCH_RESULTS_2_JSON = os.path.join(os.path.dirname(__file__), 'search_results_page2.json')
+_SEARCH_RESULTS_3_JSON = os.path.join(os.path.dirname(__file__), 'search_results_page3.json')
 
 
 class LoadChapterIdsForCollectionTestCase(TestCase):
@@ -51,3 +54,23 @@ class LoadChapterDetailsTestCase(TestCase):
         self.assertEquals(chapters[5].position, 6)
         self.assertEquals(chapters[6].title, 'Episode 7 - Oakland')
         self.assertEquals(chapters[6].position, 7)
+
+
+class SearchTestCase(TestCase):
+    @requests_mock.Mocker()
+    def test_search(self, m):
+        with open(_SEARCH_RESULTS_1_JSON, "r") as response_file:
+            response_json = json.load(response_file)
+            m.get('https://means.tv/api/contents?search=left&page=1', json=response_json)
+        with open(_SEARCH_RESULTS_2_JSON, "r") as response_file:
+            response_json = json.load(response_file)
+            m.get('https://means.tv/api/contents?search=left&page=2', json=response_json)
+        with open(_SEARCH_RESULTS_3_JSON, "r") as response_file:
+            response_json = json.load(response_file)
+            m.get('https://means.tv/api/contents?search=left&page=3', json=response_json)
+        search_results = get_search_results('left')
+        self.assertEquals(len(search_results), 2)
+        self.assertTrue(isinstance(search_results[0], Collection))
+        self.assertEquals(search_results[0].title, 'Left Trigger')
+        self.assertTrue(isinstance(search_results[1], Video))
+        self.assertEquals(search_results[1].title, 'PIIGS')
