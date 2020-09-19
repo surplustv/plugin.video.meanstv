@@ -90,15 +90,12 @@ def get_search_results(query):
     :return: list of :class:`Collection` or :class:`Video`
     """
     results = []
-    done = False
     page = 1
-    while not done:
-        results_for_page = _get_search_results_for_page(query, page)
-        if results_for_page:
-            results.extend(results_for_page)
-        else:
-            done = True
+    results_for_page = _get_search_results_for_page(query, page)
+    while results_for_page:
+        results.extend(results_for_page)
         page += 1
+        results_for_page = _get_search_results_for_page(query, page)
     return map(to_category_content, results)
 
 
