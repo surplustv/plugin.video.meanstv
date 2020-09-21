@@ -87,6 +87,9 @@ def list_collection(permalink):
     xbmcplugin.setContent(_HANDLE, 'videos')
     collection = api.load_collection(permalink)
     videos = api.load_chapters(collection.chapter_ids)
+    for video in videos:
+        if not video.description:
+            video.description = collection.description
     directory_items = map(to_directory_item, videos)
     xbmcplugin.addDirectoryItems(_HANDLE, directory_items, len(directory_items))
     xbmcplugin.addSortMethod(_HANDLE, xbmcplugin.SORT_METHOD_LABEL)
