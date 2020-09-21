@@ -28,8 +28,8 @@ def show_video(permalink):
     Show a single video (without collection) in kodi
     :param permalink: permalink id of the video
     """
-    chapter_ids = api.load_chapter_ids_of_collection(permalink)
-    show_chapter_video(chapter_ids[0])
+    collection = api.load_collection(permalink)
+    show_chapter_video(collection.chapter_ids[0])
 
 
 def show_chapter_video(chapter_id):
