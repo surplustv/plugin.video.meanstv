@@ -90,7 +90,7 @@ def list_collection(permalink):
     for video in videos:
         if not video.description:
             video.description = collection.description
-    directory_items = map(to_directory_item, videos)
+    directory_items = [v.to_directory_item() for v in videos]
     xbmcplugin.addDirectoryItems(_HANDLE, directory_items, len(directory_items))
     xbmcplugin.addSortMethod(_HANDLE, xbmcplugin.SORT_METHOD_LABEL)
     xbmcplugin.endOfDirectory(_HANDLE)
@@ -103,7 +103,7 @@ def list_category_contents(category_id):
     xbmcplugin.setPluginCategory(_HANDLE, 'Category Contents')
     xbmcplugin.setContent(_HANDLE, 'videos')
     contents = api.load_category_contents(category_id)
-    directory_items = map(to_directory_item, contents)
+    directory_items = [c.to_directory_item() for c in contents]
     xbmcplugin.addDirectoryItems(_HANDLE, directory_items, len(directory_items))
     xbmcplugin.addSortMethod(_HANDLE, xbmcplugin.SORT_METHOD_LABEL)
     xbmcplugin.endOfDirectory(_HANDLE)
@@ -130,7 +130,7 @@ def list_search_results(query):
     xbmcplugin.setPluginCategory(_HANDLE, 'Search results')
     xbmcplugin.setContent(_HANDLE, 'videos')
     contents = api.get_search_results(query)
-    directory_items = map(to_directory_item, contents)
+    directory_items = [c.to_directory_item() for c in contents]
     xbmcplugin.addDirectoryItems(_HANDLE, directory_items, len(directory_items))
     xbmcplugin.endOfDirectory(_HANDLE)
 
@@ -143,15 +143,6 @@ def list_categories():
     xbmcplugin.setContent(_HANDLE, 'videos')
     categories = api.load_categories()
     categories.insert(0, SearchItem())
-    directory_items = map(to_directory_item, categories)
+    directory_items = [c.to_directory_item() for c in categories]
     xbmcplugin.addDirectoryItems(_HANDLE, directory_items, len(directory_items))
     xbmcplugin.endOfDirectory(_HANDLE)
-
-
-def to_directory_item(item):
-    """
-    Convert arbitrary item to a directory item tuple
-    :param item: object any class
-    :return: directory item tuple
-    """
-    return item.to_directory_item()
