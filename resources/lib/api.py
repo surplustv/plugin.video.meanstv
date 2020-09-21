@@ -21,16 +21,16 @@ class ApiError(Exception):
     pass
 
 
-def load_chapter_ids_of_collection(permalink):
+def load_collection(permalink):
     """
-    Loads chapter IDs of collection from API
+    Loads a single collection from API
     :param permalink: permalink id of collection
-    :return: list of int
+    :return: :class: `Collection`
     """
     url = _MEANS_TV_BASE_URL + '/contents/' + permalink
     response = requests.get(url)
     json = response.json()
-    return json['chapters']
+    return Collection(json)
 
 
 def load_stream_url_of_chapter(chapter_id, token):

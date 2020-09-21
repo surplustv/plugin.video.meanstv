@@ -18,7 +18,8 @@ class Collection(object):
         self.title = json['title']
         self.thumb = json['main_poster_featured']
         self.description = json['description']
-
+        self.chapter_ids = json['chapters'] if 'chapters' in json else []
+        
     def to_directory_item(self):
         """
         :return: directory item tuple
