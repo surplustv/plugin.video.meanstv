@@ -5,7 +5,7 @@ from unittest import TestCase
 
 import requests_mock
 
-from resources.lib.api import load_chapter_ids_of_collection, load_chapters, get_search_results
+from resources.lib.api import load_collection, load_chapters, get_search_results
 from resources.lib.model import ChapterVideo, Collection, Video
 
 _LATM_CONTENTS_JSON = os.path.join(os.path.dirname(__file__), 'latm_contents.json')
@@ -23,9 +23,13 @@ class LoadChapterIdsForCollectionTestCase(TestCase):
         with open(_LATM_CONTENTS_JSON, "r") as response_file:
             response_json = json.load(response_file)
             m.get('https://means.tv/api/contents/latm', json=response_json)
-        expected = [1119397, 1119398, 1119399, 1119400, 1119401, 1119402, 1119404]
-        actual = load_chapter_ids_of_collection('latm')
-        self.assertEquals(actual, expected)
+        collection = load_collection('latm')
+        self.assertTrue(isinstance(collection, Collection))
+        self.assertEquals(collection.id, 'latm')
+        self.assertEquals(collection.title, 'Laughter Against The Machine')
+        self.assertEquals(collection.thumb, 'https://dtsvkkjw40x57.cloudfront.net/images/programs/572687/horizontal/big_7507_2Fcatalog_image_2F572687_2FKCnCnqiQlimDLVneahyy_LATM_Thumbnails_3.png')
+        self.assertTrue(collection.clean_description().startswith('Laughter Against The Machine'))
+        self.assertEquals(collection.chapter_ids, [1119397, 1119398, 1119399, 1119400, 1119401, 1119402, 1119404])
 
 
 class LoadChapterDetailsTestCase(TestCase):
