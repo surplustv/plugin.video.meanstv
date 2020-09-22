@@ -18,7 +18,7 @@ def duration_to_seconds(duration):
     return int(array[0]) * 3600 + int(array[1]) * 60 + int(array[2])
 
 
-def strip_tags(text):
+def clean_html(text):
     """
     Remove html tags from text and convert a small set of html-encoded symbols
     :param text: string with html markup
