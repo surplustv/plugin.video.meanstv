@@ -20,7 +20,7 @@ def duration_to_seconds(duration):
 
 def strip_tags(text):
     """
-    Remove tags from text
+    Remove html tags from text and convert a small set of html-encoded symbols
     :param text: string with html markup
     :return: text without html markup
     """
@@ -28,5 +28,7 @@ def strip_tags(text):
         clean_text = re.sub('<[^<]+?>', ' ', text)
         clean_text = clean_text.strip()
         clean_text = re.sub('\\s+', ' ', clean_text.strip())
+        clean_text = clean_text.replace('&amp;', '&')
+        clean_text = clean_text.replace('&nbsp;', ' ')
         return clean_text
     return text
