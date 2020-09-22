@@ -41,3 +41,10 @@ if __name__ == '__main__':
     # Call the router function and pass the plugin call parameters to it.
     # We use string slicing to trim the leading '?' from the plugin call paramstring
     router(sys.argv[2][1:])
+
+    import resources.lib.api as api
+    categories = api.load_categories()
+    for cat in categories:
+        contents = api.load_category_contents(cat.id)
+        for content in contents:
+            print('MEANSTVDESC: ' + content.description.encode('utf-8'))
