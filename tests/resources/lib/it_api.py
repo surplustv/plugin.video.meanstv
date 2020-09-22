@@ -1,7 +1,7 @@
 from __builtin__ import isinstance
 from unittest import TestCase
 
-from resources.lib.api import load_chapter_ids_of_collection, load_chapters, get_token, LoginError
+from resources.lib.api import load_collection, load_chapters, get_token, LoginError
 from resources.lib.model import ChapterVideo
 
 
@@ -9,9 +9,12 @@ class LoadChapterIdsForCollectionIntegrationTestCase(TestCase):
 
     def test_laughter_against_the_machine(self):
         # https://means.tv/programs/latm?categoryId=20473
-        expected = [1119397, 1119398, 1119399, 1119400, 1119401, 1119402, 1119404]
-        actual = load_chapter_ids_of_collection('latm')
-        self.assertEquals(actual, expected)
+        collection = load_collection('latm')
+        self.assertEquals(collection.id, 'latm')
+        self.assertEquals(collection.title, 'Laughter Against The Machine')
+        self.assertEquals(collection.thumb, 'https://dtsvkkjw40x57.cloudfront.net/images/programs/572687/horizontal/big_7507_2Fcatalog_image_2F572687_2FKCnCnqiQlimDLVneahyy_LATM_Thumbnails_3.png')
+        self.assertTrue(collection.clean_description().startswith('Laughter Against The Machine'))
+        self.assertEquals(collection.chapter_ids, [1119397, 1119398, 1119399, 1119400, 1119401, 1119402, 1119404])
 
 
 class LoadChapterDetailsIntegrationTestCase(TestCase):
@@ -20,7 +23,6 @@ class LoadChapterDetailsIntegrationTestCase(TestCase):
         # https://means.tv/programs/latm?categoryId=20473
         chapters = load_chapters([1119397, 1119398, 1119399, 1119400, 1119401, 1119402, 1119404])
         self.assertEquals(len(chapters), 7)
-        self.assertTrue(all([isinstance(c, ChapterVideo) for c in chapters]))
         self.assertEquals(chapters[0].title, 'Episode 1 - Arizona')
         self.assertEquals(chapters[0].position, 1)
         self.assertEquals(chapters[1].title, 'Episode 2 -  Chicago')

@@ -21,16 +21,16 @@ class ApiError(Exception):
     pass
 
 
-def load_chapter_ids_of_collection(permalink):
+def load_collection(permalink):
     """
-    Loads chapter IDs of collection from API
+    Loads a single collection from API
     :param permalink: permalink id of collection
-    :return: list of int
+    :return: :class: `Collection`
     """
     url = _MEANS_TV_BASE_URL + '/contents/' + permalink
     response = requests.get(url)
     json = response.json()
-    return json['chapters']
+    return Collection(json)
 
 
 def load_stream_url_of_chapter(chapter_id, token):
@@ -57,7 +57,7 @@ def load_chapters(chapters):
     url = _MEANS_TV_BASE_URL + '/chapters/?ids[]=' + chapters_str
     response = requests.get(url)
     json_list = response.json()
-    return map(to_chapter_video, json_list)
+    return [ChapterVideo(item) for item in json_list]
 
 
 def load_category_contents(category_id):
@@ -69,7 +69,7 @@ def load_category_contents(category_id):
     url = _MEANS_TV_BASE_URL + '/contents?type=category_preview&category_id=' + str(category_id)
     response = requests.get(url)
     json_list = response.json()
-    return map(to_category_content, json_list)
+    return [to_category_content(item) for item in json_list]
 
 
 def load_categories():
@@ -80,7 +80,7 @@ def load_categories():
     url = _MEANS_TV_BASE_URL + '/categories'
     response = requests.get(url)
     json_list = response.json()
-    return map(to_category, json_list)
+    return [Category(item) for item in json_list]
 
 
 def get_search_results(query):
@@ -96,7 +96,7 @@ def get_search_results(query):
         results.extend(results_for_page)
         page += 1
         results_for_page = _get_search_results_for_page(query, page)
-    return map(to_category_content, results)
+    return [to_category_content(item) for item in results]
 
 
 def _get_search_results_for_page(query, page):
@@ -137,31 +137,12 @@ def get_token(email, password):
     return response.cookies['remember_user_token']
 
 
-def to_category(json):
-    """
-    Convert category json to :class:`Category`
-    :param json: category as json
-    :return: :class:`Category`
-    """
-    return Category(json)
-
-
 def to_category_content(item):
     """
     Conver json list item from category content to video or collection
     :param item: category content item (json)
     :return: depending on content type :class:`Video` and :class:`Collection`
     """
-    content_type = item['content_type']
-    if content_type == 'video':
+    if item['content_type'] == 'video':
         return Video(item)
     return Collection(item)
-
-
-def to_chapter_video(json):
-    """
-    Convert json to :class:`ChapterVideo`
-    :param json: map of json content
-    :return: :class:`ChapterVideo`
-    """
-    return ChapterVideo(json)
