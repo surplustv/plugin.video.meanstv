@@ -4,6 +4,7 @@ Route requests to plugin functionality
 from urlparse import parse_qsl
 
 from resources.lib import handler
+from resources.lib import login
 
 
 def route(paramstring):
@@ -29,7 +30,7 @@ def route(paramstring):
         elif params['show'] == 'search':
             handler.search()
         elif params['show'] == 'login':
-            handler.show_login_dialog()
+            login.show_login_dialog()
         else:
             raise ValueError('Invalid paramstring: {0}!'.format(paramstring))
     else:
