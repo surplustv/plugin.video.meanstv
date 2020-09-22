@@ -31,6 +31,8 @@ def route(paramstring):
             handler.search()
         elif params['show'] == 'login':
             login.show_login_dialog()
+        elif params['show'] == 'logout':
+            login.logout()
         else:
             raise ValueError('Invalid paramstring: {0}!'.format(paramstring))
     else:

@@ -56,6 +56,12 @@ def _login(email, password):
     return None
 
 
+def logout():
+    settings.set_email('')
+    settings.set_token('')
+    show_info_message('Signed out')
+
+
 def show_error_message(msg, title = ''):
     heading = NOTIFICATION_HEADING
     if title:
@@ -69,4 +75,4 @@ def show_info_message(msg, title = ''):
     if title:
         heading += ': ' + str(title)
     dialog = xbmcgui.Dialog()
-    dialog.notification(str(title), str(msg), xbmcgui.NOTIFICATION_INFO, 5000, False)
+    dialog.notification(heading, str(msg), xbmcgui.NOTIFICATION_INFO, 5000, False)
