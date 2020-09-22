@@ -1,8 +1,6 @@
 """
 Module to handle UI requests
 """
-import sys
-
 import xbmc
 import xbmcgui
 
@@ -39,7 +37,6 @@ def _enter_email():
     dialog = xbmc.Keyboard(old_email, 'Email')
     dialog.doModal()
     if dialog.isConfirmed():
-        #TODO validate email
         return dialog.getText().strip()
     return ''
 
@@ -73,7 +70,7 @@ def _login(email, password):
 
 def show_logout_dialog():
     '''
-    Open logout confirmation dialog. 
+    Open logout confirmation dialog.
     Reset token and email in addon settings when user confirms to logout.
     Show info notification when logged out.
     '''
@@ -87,7 +84,7 @@ def show_logout_dialog():
             show_info_message('Signed out')
 
 
-def show_error_message(msg, title = ''):
+def show_error_message(msg, title=''):
     '''
     Show an error notification with sound
     '''
@@ -98,7 +95,7 @@ def show_error_message(msg, title = ''):
     dialog.notification(heading, str(msg), xbmcgui.NOTIFICATION_ERROR, NOTIFICATION_LENGTH, True)
 
 
-def show_info_message(msg, title = ''):
+def show_info_message(msg, title=''):
     '''
     Show an in notification without sound
     '''
