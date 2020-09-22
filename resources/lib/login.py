@@ -10,8 +10,13 @@ from resources.lib import api
 from resources.lib import settings
 
 DIALOG_HEADING = 'Means.TV'
+NOTIFICATION_LENGTH = 5000
 
 def show_login_dialog():
+    '''
+    Open login dialogs for email and password and try to login with the entered credentials.
+    Store token and email in addon settings when successful logged in.
+    '''
     email = _enter_email()
     if email:
         password = _enter_password()
@@ -24,6 +29,10 @@ def show_login_dialog():
 
                 
 def _enter_email():
+    '''
+    Open dialog for email address
+    :return: entered email address
+    '''
     old_email = settings.get_email()
     dialog = xbmc.Keyboard(old_email, 'Email')
     dialog.doModal()
@@ -34,6 +43,10 @@ def _enter_email():
 
 
 def _enter_password():
+    '''
+    Open dialog for password
+    :return: entered password
+    '''
     dialog = xbmc.Keyboard('', 'Password', True)
     dialog.doModal(60000)
     if dialog.isConfirmed():
@@ -57,6 +70,9 @@ def _login(email, password):
 
 
 def show_logout_dialog():
+    '''
+    Open logout confirmation and reset token and email in addon settings when user confirms to logout.
+    '''
     email = settings.get_email()
     if email:
         dialog = xbmcgui.Dialog()
@@ -68,16 +84,22 @@ def show_logout_dialog():
 
 
 def show_error_message(msg, title = ''):
+    '''
+    Show an error notification with sound
+    '''
     heading = DIALOG_HEADING
     if title:
         heading += ': ' + str(title)
     dialog = xbmcgui.Dialog()
-    dialog.notification(heading, str(msg), xbmcgui.NOTIFICATION_ERROR, 5000, True)
+    dialog.notification(heading, str(msg), xbmcgui.NOTIFICATION_ERROR, NOTIFICATION_LENGTH, True)
 
 
 def show_info_message(msg, title = ''):
+    '''
+    Show an in notification without sound
+    '''
     heading = DIALOG_HEADING
     if title:
         heading += ': ' + str(title)
     dialog = xbmcgui.Dialog()
-    dialog.notification(heading, str(msg), xbmcgui.NOTIFICATION_INFO, 5000, False)
+    dialog.notification(heading, str(msg), xbmcgui.NOTIFICATION_INFO, NOTIFICATION_LENGTH, False)
