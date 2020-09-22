@@ -16,6 +16,8 @@ def show_login_dialog():
     '''
     Open login dialogs for email and password and try to login with the entered credentials.
     Store token and email in addon settings when successful logged in.
+    Show info notification when logged in.
+    Show error notification when error occurs.
     '''
     email = _enter_email()
     if email:
@@ -27,7 +29,7 @@ def show_login_dialog():
                 settings.set_token(token)
                 show_info_message('Signed in: {0}'.format(email))
 
-                
+
 def _enter_email():
     '''
     Open dialog for email address
@@ -56,8 +58,8 @@ def _enter_password():
 
 def _login(email, password):
     """
-    Trys to get a token from api with credentials from settings.
-    Shows error message if not successfull.
+    Try to get a token from api with credentials from settings.
+    Show error message if not successfull.
     :return token or None if not successfull
     """
     try:
@@ -71,7 +73,9 @@ def _login(email, password):
 
 def show_logout_dialog():
     '''
-    Open logout confirmation and reset token and email in addon settings when user confirms to logout.
+    Open logout confirmation dialog. 
+    Reset token and email in addon settings when user confirms to logout.
+    Show info notification when logged out.
     '''
     email = settings.get_email()
     if email:
