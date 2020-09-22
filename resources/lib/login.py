@@ -9,7 +9,7 @@ import xbmcgui
 from resources.lib import api
 from resources.lib import settings
 
-NOTIFICATION_HEADING = 'Means.TV'
+DIALOG_HEADING = 'Means.TV'
 
 def show_login_dialog():
     email = _enter_email()
@@ -56,14 +56,19 @@ def _login(email, password):
     return None
 
 
-def logout():
-    settings.set_email('')
-    settings.set_token('')
-    show_info_message('Signed out')
+def show_logout_dialog():
+    email = settings.get_email()
+    if email:
+        dialog = xbmcgui.Dialog()
+        confirmed = dialog.yesno(DIALOG_HEADING, 'Sign out: {0}?'.format(email))
+        if confirmed:
+            settings.set_email('')
+            settings.set_token('')
+            show_info_message('Signed out')
 
 
 def show_error_message(msg, title = ''):
-    heading = NOTIFICATION_HEADING
+    heading = DIALOG_HEADING
     if title:
         heading += ': ' + str(title)
     dialog = xbmcgui.Dialog()
@@ -71,7 +76,7 @@ def show_error_message(msg, title = ''):
 
 
 def show_info_message(msg, title = ''):
-    heading = NOTIFICATION_HEADING
+    heading = DIALOG_HEADING
     if title:
         heading += ': ' + str(title)
     dialog = xbmcgui.Dialog()
