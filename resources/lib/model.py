@@ -36,7 +36,7 @@ class Collection(object):
         """
         :return: description without html markup
         """
-        return formatting.strip_tags(self.description)
+        return formatting.clean_html(self.description)
 
 
 class ChapterVideo(object):
@@ -78,7 +78,7 @@ class ChapterVideo(object):
         """
         :return: description without html markup
         """
-        return formatting.strip_tags(self.description)
+        return formatting.clean_html(self.description)
 
 
 class Video(object):
@@ -118,7 +118,7 @@ class Video(object):
         """
         :return: description without html markup
         """
-        return formatting.strip_tags(self.description)
+        return formatting.clean_html(self.description)
 
 
 class Category(object):
