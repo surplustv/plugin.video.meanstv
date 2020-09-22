@@ -28,6 +28,8 @@ def route(paramstring):
             handler.show_chapter_video(params['id'])
         elif params['show'] == 'search':
             handler.search()
+        elif params['show'] == 'login':
+            handler.show_login_dialog()
         else:
             raise ValueError('Invalid paramstring: {0}!'.format(paramstring))
     else:

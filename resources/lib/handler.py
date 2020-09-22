@@ -37,31 +37,16 @@ def show_chapter_video(chapter_id):
     Show a video that is a chapter in the collection in kodi
     :param chapter_id: id of the chapter in the collection
     """
-    token = login()
-    if token is not None:
+    token = settings.get_token()
+    if not token:
+        show_login_dialog()
+        token = settings.get_token()
+    if token:
         url = api.load_stream_url_of_chapter(chapter_id, token)
-        play(url)
+        _play(url)
 
 
-def login():
-    """
-    Trys to get a token from api with credentials from settings.
-    Shows error message if not successfull.
-    :return token or None if not successfull
-    """
-    (email, password) = settings.get_credentials()
-    try:
-        return api.get_token(email, password)
-    except api.LoginError as err:
-        msg = str(err)
-    except Exception: # pylint: disable=broad-except
-        msg = "Unexpected Error"
-    dialog = xbmcgui.Dialog()
-    dialog.notification('Login failed', msg, xbmcgui.NOTIFICATION_ERROR, 5000, True)
-    return None
-
-
-def play(url):
+def _play(url):
     """
     Starts playing a video from a stream url
     :param url: stream url
@@ -146,3 +131,58 @@ def list_categories():
     directory_items = [c.to_directory_item() for c in categories]
     xbmcplugin.addDirectoryItems(_HANDLE, directory_items, len(directory_items))
     xbmcplugin.endOfDirectory(_HANDLE)
+
+
+def show_login_dialog():
+    email = enter_email()
+    if email:
+        password = enter_password()
+        if password:
+            token = login(email, password)
+            if token:
+                settings.set_email(email)
+                settings.set_token(token)
+                show_info_message('Means.TV', 'Signed in: {0}'.format(email))
+
+                
+def _enter_email():
+    old_email = settings.get_email()
+    dialog = xbmc.Keyboard(old_email, 'Email')
+    dialog.doModal()
+    if dialog.isConfirmed():
+        #TODO validate email
+        return dialog.getText().strip()
+    return ''
+
+
+def _enter_password():
+    dialog = xbmc.Keyboard('', 'Password', True)
+    dialog.doModal(60000)
+    if dialog.isConfirmed():
+        return dialog.getText()
+    return ''
+
+
+def _login(email, password):
+    """
+    Trys to get a token from api with credentials from settings.
+    Shows error message if not successfull.
+    :return token or None if not successfull
+    """
+    try:
+        return api.get_token(email, password)
+    except api.LoginError as err:
+        show_error_message('Login failed', err)
+    except Exception: # pylint: disable=broad-except
+        show_error_message('Login failed', "Unexpected Error")
+    return None
+
+
+def show_error_message(title, msg):
+    dialog = xbmcgui.Dialog()
+    dialog.notification(str(title), str(msg), xbmcgui.NOTIFICATION_ERROR, 5000, True)
+
+
+def show_info_message(title, msg):
+    dialog = xbmcgui.Dialog()
+    dialog.notification(str(title), str(msg), xbmcgui.NOTIFICATION_INFO, 5000, False)
