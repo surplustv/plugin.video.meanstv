@@ -49,6 +49,9 @@ class GetTokenTestCase(TestCase):
         
 class LoadStreamUrlOfChapter(TestCase):
     
+    def test_illegal_chapter(self):
+        self.assertRaises(ValueError, lambda: load_stream_url_of_chapter(0, ''))
+    
     def test_no_token(self):
         # Chapter: https://means.tv/programs/jposadas
         chapter = 1206515
