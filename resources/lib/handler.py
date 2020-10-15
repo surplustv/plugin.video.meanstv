@@ -10,6 +10,7 @@ import xbmcplugin
 from resources.lib import api
 from resources.lib import settings
 from resources.lib import login
+from resources.lib import helper
 from resources.lib.model import SearchItem
 
 # Get the plugin handle as an integer number.
@@ -38,12 +39,23 @@ def show_chapter_video(chapter_id):
     Show a video that is a chapter in the collection in kodi
     :param chapter_id: id of the chapter in the collection
     """
+    url = None
     token = settings.get_token()
     if not token:
         login.show_login_dialog()
         token = settings.get_token()
     if token:
-        url = api.load_stream_url_of_chapter(chapter_id, token)
+        try:
+            url = api.load_stream_url_of_chapter(chapter_id, token)
+        except api.LoginError:
+            login.show_login_dialog()
+            token = settings.get_token()
+            if token:
+                try:
+                    url = api.load_stream_url_of_chapter(chapter_id, token)
+                except Exception as err:
+                    helper.show_error_notification(err.message, 'Stream Error')
+    if url:
         _play(url)
 
 
@@ -62,8 +74,9 @@ def _play(url):
             play_item.setProperty(_INPUTSTREAM_PROPERTY, is_helper.inputstream_addon)
             xbmcplugin.setResolvedUrl(_HANDLE, True, play_item)
     except ImportError as err:
-        xbmc.log('Failed to load inputstream helper: ' + err.message)
-
+        helper.show_error_notification(err.message, 'Playback failed')
+    except Exception as err:
+        helper.show_error_notification(err.message, 'Playback failed')
 
 def list_collection(permalink):
     """
