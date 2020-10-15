@@ -8,10 +8,8 @@ import xbmcgui
 
 from resources.lib import api
 from resources.lib import settings
+from resources.lib import helper
 
-
-DIALOG_HEADING = 'Means.TV'
-NOTIFICATION_LENGTH = 5000
 
 def show_login_dialog():
     '''
@@ -29,7 +27,7 @@ def show_login_dialog():
                 settings.set_email(email)
                 settings.set_login_time(datetime.now().strftime("%Y-%m-%d %H:%M"))
                 settings.set_token(token)
-                show_info_message('Signed in: {0}'.format(email))
+                helper.show_info_message('Signed in: {0}'.format(email))
 
 
 def _enter_email():
@@ -66,9 +64,9 @@ def _login(email, password):
     try:
         return api.get_token(email, password)
     except api.LoginError as err:
-        show_error_message(err, 'Login failed')
+        helper.show_error_message(err, 'Login failed')
     except Exception: # pylint: disable=broad-except
-        show_error_message('Unexpected Error', 'Login failed')
+        helper.show_error_message('Unexpected Error', 'Login failed')
     return None
 
 
@@ -86,26 +84,5 @@ def show_logout_dialog():
             settings.set_email('')
             settings.set_login_time('')
             settings.set_token('')
-            show_info_message('Signed out')
+            helper.show_info_message('Signed out')
 
-
-def show_error_message(msg, title=''):
-    '''
-    Show an error notification with sound
-    '''
-    heading = DIALOG_HEADING
-    if title:
-        heading += ': ' + str(title)
-    dialog = xbmcgui.Dialog()
-    dialog.notification(heading, str(msg), xbmcgui.NOTIFICATION_ERROR, NOTIFICATION_LENGTH, True)
-
-
-def show_info_message(msg, title=''):
-    '''
-    Show an in notification without sound
-    '''
-    heading = DIALOG_HEADING
-    if title:
-        heading += ': ' + str(title)
-    dialog = xbmcgui.Dialog()
-    dialog.notification(heading, str(msg), xbmcgui.NOTIFICATION_INFO, NOTIFICATION_LENGTH, False)
