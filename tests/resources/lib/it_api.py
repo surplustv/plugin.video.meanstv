@@ -47,6 +47,7 @@ class GetTokenTestCase(TestCase):
         self.assertRaises(LoginError, lambda: get_token('', ''))
         self.assertRaises(LoginError, lambda: get_token(None, None))
         
+        
 class LoadStreamUrlOfChapter(TestCase):
     
     def test_illegal_chapter(self):
