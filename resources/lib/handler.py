@@ -41,20 +41,22 @@ def show_chapter_video(chapter_id):
     """
     url = None
     token = settings.get_token()
-    if not token:
-        login.show_login_dialog()
-        token = settings.get_token()
     if token:
         try:
             url = api.load_stream_url_of_chapter(chapter_id, token)
         except api.LoginError:
-            login.show_login_dialog()
-            token = settings.get_token()
-            if token:
-                try:
-                    url = api.load_stream_url_of_chapter(chapter_id, token)
-                except Exception as err:
-                    helper.show_error_notification(err.message, 'Stream Error')
+            pass
+        except Exception as err: # pylint: disable=broad-except
+            helper.show_error_notification(err.message, 'Stream Error')
+            return
+    if not url:
+        login.show_login_dialog()
+        token = settings.get_token()
+        if token:
+            try:
+                url = api.load_stream_url_of_chapter(chapter_id, token)
+            except Exception as err: # pylint: disable=broad-except
+                helper.show_error_notification(err.message, 'Stream Error')
     if url:
         _play(url)
 
@@ -75,7 +77,7 @@ def _play(url):
             xbmcplugin.setResolvedUrl(_HANDLE, True, play_item)
     except ImportError as err:
         helper.show_error_notification(err.message, 'Playback failed')
-    except Exception as err:
+    except Exception as err: # pylint: disable=broad-except
         helper.show_error_notification(err.message, 'Playback failed')
 
 def list_collection(permalink):
