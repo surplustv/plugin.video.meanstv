@@ -85,4 +85,3 @@ def show_logout_dialog():
             settings.set_login_time('')
             settings.set_token('')
             helper.show_info_notification('Signed out')
-
