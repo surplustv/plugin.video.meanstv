@@ -32,3 +32,17 @@ def set_token(token):
     :param: token: new token
     """
     return _ADDON.setSetting('remember_user_token', token)
+
+def get_login_time():
+    """
+    get time of active login from addon settings
+    :return: login time as formatted string
+    """
+    return _ADDON.getSetting('login_time')
+
+def set_login_time(time):
+    """
+    set time of active login in addon settings
+    :param: time: login time as formatted string
+    """
+    return _ADDON.setSetting('login_time', time)

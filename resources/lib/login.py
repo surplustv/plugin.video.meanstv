@@ -1,11 +1,14 @@
 """
 Module to handle UI requests
 """
+from datetime import datetime
+
 import xbmc
 import xbmcgui
 
 from resources.lib import api
 from resources.lib import settings
+
 
 DIALOG_HEADING = 'Means.TV'
 NOTIFICATION_LENGTH = 5000
@@ -24,6 +27,7 @@ def show_login_dialog():
             token = _login(email, password)
             if token:
                 settings.set_email(email)
+                settings.set_login_time(datetime.now().strftime("%Y-%m-%d %H:%M"))
                 settings.set_token(token)
                 show_info_message('Signed in: {0}'.format(email))
 
@@ -80,6 +84,7 @@ def show_logout_dialog():
         confirmed = dialog.yesno(DIALOG_HEADING, 'Sign out: {0}?'.format(email))
         if confirmed:
             settings.set_email('')
+            settings.set_login_time('')
             settings.set_token('')
             show_info_message('Signed out')
 
