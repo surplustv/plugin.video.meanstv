@@ -79,7 +79,7 @@ def show_logout_dialog():
     email = settings.get_email()
     if email:
         dialog = xbmcgui.Dialog()
-        confirmed = dialog.yesno(DIALOG_HEADING, 'Sign out: {0}?'.format(email))
+        confirmed = dialog.yesno(helper.DIALOG_HEADING, 'Sign out: {0}?'.format(email))
         if confirmed:
             settings.set_email('')
             settings.set_login_time('')
