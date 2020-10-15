@@ -8,7 +8,7 @@ DIALOG_HEADING = 'Means.TV'
 NOTIFICATION_LENGTH = 5000
 
 
-def show_error_message(msg, title=''):
+def show_error_notification(msg, title=''):
     '''
     Show an error notification with sound
     '''
@@ -19,7 +19,7 @@ def show_error_message(msg, title=''):
     dialog.notification(heading, str(msg), xbmcgui.NOTIFICATION_ERROR, NOTIFICATION_LENGTH, True)
 
 
-def show_info_message(msg, title=''):
+def show_info_notification(msg, title=''):
     '''
     Show an in notification without sound
     '''

@@ -27,7 +27,7 @@ def show_login_dialog():
                 settings.set_email(email)
                 settings.set_login_time(datetime.now().strftime("%Y-%m-%d %H:%M"))
                 settings.set_token(token)
-                helper.show_info_message('Signed in: {0}'.format(email))
+                helper.show_info_notification('Signed in: {0}'.format(email))
 
 
 def _enter_email():
@@ -64,9 +64,9 @@ def _login(email, password):
     try:
         return api.get_token(email, password)
     except api.LoginError as err:
-        helper.show_error_message(err, 'Login failed')
+        helper.show_error_notification(err, 'Login failed')
     except Exception: # pylint: disable=broad-except
-        helper.show_error_message('Unexpected Error', 'Login failed')
+        helper.show_error_notification('Unexpected Error', 'Login failed')
     return None
 
 
@@ -84,5 +84,5 @@ def show_logout_dialog():
             settings.set_email('')
             settings.set_login_time('')
             settings.set_token('')
-            helper.show_info_message('Signed out')
+            helper.show_info_notification('Signed out')
 
