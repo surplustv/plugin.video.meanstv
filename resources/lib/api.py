@@ -44,6 +44,8 @@ def load_stream_url_of_chapter(chapter_id, token):
     cookies = {'remember_user_token': token}
     response = requests.get(url, cookies=cookies)
     json = response.json()
+    if not json[0]['has_access']:
+        raise LoginError('Access denied to chapter ' + str(chapter_id))
     return json[0]['subject']['versions']['hls']
 
 

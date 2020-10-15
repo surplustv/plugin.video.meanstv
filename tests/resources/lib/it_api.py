@@ -52,12 +52,12 @@ class LoadStreamUrlOfChapter(TestCase):
     def test_no_token(self):
         # Chapter: https://means.tv/programs/jposadas
         chapter = 1206515
-        self.assertFalse(load_stream_url_of_chapter(chapter, 'xxx'))
-        self.assertFalse(load_stream_url_of_chapter(chapter, ''))
-        self.assertFalse(load_stream_url_of_chapter(chapter, None))
+        self.assertRaises(LoginError, lambda: load_stream_url_of_chapter(chapter, 'xxx'))
+        self.assertRaises(LoginError, lambda: load_stream_url_of_chapter(chapter, ''))
+        self.assertRaises(LoginError, lambda: load_stream_url_of_chapter(chapter, None))
     
     def test_old_token(self):
         # Chapter: https://means.tv/programs/jposadas
         chapter = 1206515
         old_token = 'W1szODU1NTI0XSwiJDJhJDEwJEN6VWtDSFFneWRJSzhHZUx6ak0vVWUiLCIxNTk5NDExMTI1LjE4ODkxOTUiXQ%3D%3D--bd84f8019a8dff072dc6a71a52cba035483d6331'
-        self.assertFalse(load_stream_url_of_chapter(chapter, old_token))
+        self.assertRaises(LoginError, lambda: load_stream_url_of_chapter(chapter, old_token))
