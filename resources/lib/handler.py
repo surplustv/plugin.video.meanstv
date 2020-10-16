@@ -39,46 +39,51 @@ def show_chapter_video(chapter_id):
     Show a video that is a chapter in the collection in kodi
     :param chapter_id: id of the chapter in the collection
     """
+    helper.log('Play Chapter - ID', chapter_id)
     url = None
-    token = settings.get_token()
-    if token:
-        try:
-            url = api.load_stream_url_of_chapter(chapter_id, token)
-        except api.LoginError:
-            pass
-        except Exception as err: # pylint: disable=broad-except
-            helper.show_error_notification(err.message, 'Stream Error')
-            return
-    if not url:
+    try:
+        url = _get_stream_url(chapter_id)
+        helper.log('Play Chapter - URL', url)
+        if url:
+            _play(url)
+    except Exception as err: # pylint: disable=broad-except
+        helper.show_error_notification(err.message, 'Playback failed')
+
+
+def _get_stream_url(chapter_id):
+    """
+    Trys to get the stream url of a chapter. If first try fails, shows login dialog and trys again.
+    :param chapter_id: chapter id
+    :return stream url or None if not successful at all
+    """
+    try:
+        token = settings.get_token()
+        return api.load_stream_url_of_chapter(chapter_id, token)
+    except api.LoginError:
         login.show_login_dialog()
         token = settings.get_token()
         if token:
-            try:
-                url = api.load_stream_url_of_chapter(chapter_id, token)
-            except Exception as err: # pylint: disable=broad-except
-                helper.show_error_notification(err.message, 'Stream Error')
-    if url:
-        _play(url)
+            return api.load_stream_url_of_chapter(chapter_id, token)
+        return None
 
 
 def _play(url):
     """
     Starts playing a video from a stream url
     :param url: stream url
+    :raise ImportError
     """
-    try:
-        import inputstreamhelper
-        is_helper = inputstreamhelper.Helper('mpd', drm='widevine')
-        if is_helper.check_inputstream():
-            play_item = xbmcgui.ListItem(path=url)
-            play_item.setProperty('inputstreamaddon', 'inputstream.adaptive')
-            play_item.setProperty('inputstream.adaptive.manifest_type', 'hls')
-            play_item.setProperty(_INPUTSTREAM_PROPERTY, is_helper.inputstream_addon)
-            xbmcplugin.setResolvedUrl(_HANDLE, True, play_item)
-    except ImportError as err:
-        helper.show_error_notification(err.message, 'Playback failed')
-    except Exception as err: # pylint: disable=broad-except
-        helper.show_error_notification(err.message, 'Playback failed')
+    import inputstreamhelper # pylint: disable=import-error
+    is_helper = inputstreamhelper.Helper('mpd', drm='widevine')
+    if is_helper.check_inputstream():
+        play_item = xbmcgui.ListItem(path=url)
+        play_item.setProperty('inputstreamaddon', 'inputstream.adaptive')
+        play_item.setProperty('inputstream.adaptive.manifest_type', 'hls')
+        play_item.setProperty(_INPUTSTREAM_PROPERTY, is_helper.inputstream_addon)
+        xbmcplugin.setResolvedUrl(_HANDLE, True, play_item)
+    else:
+        raise RuntimeError('Inputstream check failed')
+
 
 def list_collection(permalink):
     """
