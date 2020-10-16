@@ -9,6 +9,9 @@ DIALOG_HEADING = 'Means.TV'
 NOTIFICATION_LENGTH = 5000
 
 def log(prefix, msg):
+    '''
+    Prints a debug message to Kodi log
+    '''
     xbmc.log('[{0}] {1}:  {2}'.format(DIALOG_HEADING, str(prefix), str(msg)))
 
 
