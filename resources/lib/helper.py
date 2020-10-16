@@ -8,6 +8,9 @@ import xbmcgui
 DIALOG_HEADING = 'Means.TV'
 NOTIFICATION_LENGTH = 5000
 
+def log(prefix, msg):
+    xbmc.log('[{0}] {1}:  {2}'.format(DIALOG_HEADING, str(prefix), str(msg)))
+
 
 def show_error_notification(msg, title=''):
     '''
@@ -18,7 +21,7 @@ def show_error_notification(msg, title=''):
         heading += ': ' + str(title)
     dialog = xbmcgui.Dialog()
     dialog.notification(heading, str(msg), xbmcgui.NOTIFICATION_ERROR, NOTIFICATION_LENGTH, True)
-    xbmc.log('[{0}] {1}:  {2}'.format(DIALOG_HEADING, title, msg))
+    log(title, msg)
 
 
 def show_info_notification(msg, title=''):
