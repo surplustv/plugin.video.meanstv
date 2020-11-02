@@ -12,7 +12,7 @@ class LoadChapterIdsForCollectionIntegrationTestCase(TestCase):
         collection = load_collection('latm')
         self.assertEquals(collection.id, 'latm')
         self.assertEquals(collection.title, 'Laughter Against The Machine')
-        self.assertEquals(collection.thumb, 'https://dtsvkkjw40x57.cloudfront.net/images/programs/572687/horizontal/big_7507_2Fcatalog_image_2F572687_2FKCnCnqiQlimDLVneahyy_LATM_Thumbnails_3.png')
+        self.assertTrue(collection.thumb)
         self.assertTrue(collection.clean_description().startswith('Laughter Against The Machine'))
         self.assertEquals(collection.chapter_ids, [1119397, 1119398, 1119399, 1119400, 1119401, 1119402, 1119404])
 
