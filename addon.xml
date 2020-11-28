@@ -16,7 +16,8 @@ provider-name="some_developers">
   <description lang="en_GB">Plugin to watch Means TV videos with Kodi</description>
   <disclaimer lang="en_GB">Unofficial plugin. All videos are owned by means.tv</disclaimer>
   <assets>
-    <icon>icon.png</icon>
+    <icon>resources/icon.png</icon>
+    <fanart>resources/fanart.png</fanart>
   </assets>
   <news>First implementation</news>
 </extension>
