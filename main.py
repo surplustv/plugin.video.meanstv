@@ -1,6 +1,7 @@
 """
 Kodi plugin to view means tv
 """
+from __future__ import absolute_import
 import sys
 
 from resources.lib import router

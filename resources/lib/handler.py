@@ -1,6 +1,7 @@
 """
 Module to handle UI requests
 """
+from __future__ import absolute_import
 import sys
 
 import xbmc
@@ -75,8 +76,8 @@ def play(url):
             play_item.setProperty('inputstream.adaptive.manifest_type', 'hls')
             play_item.setProperty(_INPUTSTREAM_PROPERTY, is_helper.inputstream_addon)
             xbmcplugin.setResolvedUrl(_HANDLE, True, play_item)
-    except ImportError as err:
-        xbmc.log('Failed to load inputstream helper: ' + err.message)
+    except ImportError:
+        xbmc.log('Failed to load inputstream helper')
 
 
 def list_collection(permalink):

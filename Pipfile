@@ -16,5 +16,6 @@ python_version = "2.7"
 
 [scripts]
 lint = "pylint main.py resources"
+lint3 = "pylint --py3k main.py resources"
 test = "python -m unittest discover"
 it = "python -m unittest discover -p 'it_*.py'"

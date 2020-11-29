@@ -16,6 +16,11 @@ jobs:
       with:
         python-version: '2.7'
     - uses: dschep/install-pipenv-action@v1
-    - run: pipenv install -d
-    - run: pipenv run lint
-    - run: pipenv run test
+    - name: install dependencies
+      run: pipenv install -d
+    - name: run python2 lint
+      run: pipenv run lint
+    - name: run python3 compatibility lint
+      run: pipenv run lint3
+    - name: run tests
+      run: pipenv run test

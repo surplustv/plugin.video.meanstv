@@ -1,6 +1,7 @@
 """
 Helper module for formatting input from means TV
 """
+from __future__ import absolute_import
 import re
 
 def duration_to_seconds(duration):
