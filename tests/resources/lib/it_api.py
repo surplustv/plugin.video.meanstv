@@ -1,14 +1,14 @@
 from __builtin__ import isinstance
 from unittest import TestCase
 
-from resources.lib.api import load_collection, load_chapters, get_token, LoginError
+from resources.lib.api import load_collection, load_chapters, get_token, load_stream_url_of_chapter, LoginError
 from resources.lib.model import ChapterVideo
 
 
 class LoadChapterIdsForCollectionIntegrationTestCase(TestCase):
 
     def test_laughter_against_the_machine(self):
-        # https://means.tv/programs/latm?categoryId=20473
+        # Collection: https://means.tv/programs/latm?categoryId=20473
         collection = load_collection('latm')
         self.assertEquals(collection.id, 'latm')
         self.assertEquals(collection.title, 'Laughter Against The Machine')
@@ -20,7 +20,7 @@ class LoadChapterIdsForCollectionIntegrationTestCase(TestCase):
 class LoadChapterDetailsIntegrationTestCase(TestCase):
 
     def test_laughter_against_the_machine(self):
-        # https://means.tv/programs/latm?categoryId=20473
+        # Chapters: https://means.tv/programs/latm?categoryId=20473
         chapters = load_chapters([1119397, 1119398, 1119399, 1119400, 1119401, 1119402, 1119404])
         self.assertEquals(len(chapters), 7)
         self.assertEquals(chapters[0].title, 'Episode 1 - Arizona')
@@ -46,3 +46,22 @@ class GetTokenTestCase(TestCase):
         self.assertRaises(LoginError, lambda: get_token('no@valid.cr', 'edentials'))
         self.assertRaises(LoginError, lambda: get_token('', ''))
         self.assertRaises(LoginError, lambda: get_token(None, None))
+        
+        
+class LoadStreamUrlOfChapter(TestCase):
+    
+    def test_illegal_chapter(self):
+        self.assertRaises(ValueError, lambda: load_stream_url_of_chapter(0, ''))
+    
+    def test_no_token(self):
+        # Chapter: https://means.tv/programs/jposadas
+        chapter = 1206515
+        self.assertRaises(LoginError, lambda: load_stream_url_of_chapter(chapter, 'xxx'))
+        self.assertRaises(LoginError, lambda: load_stream_url_of_chapter(chapter, ''))
+        self.assertRaises(LoginError, lambda: load_stream_url_of_chapter(chapter, None))
+    
+    def test_old_token(self):
+        # Chapter: https://means.tv/programs/jposadas
+        chapter = 1206515
+        old_token = 'W1szODU1NTI0XSwiJDJhJDEwJEN6VWtDSFFneWRJSzhHZUx6ak0vVWUiLCIxNTk5NDExMTI1LjE4ODkxOTUiXQ%3D%3D--bd84f8019a8dff072dc6a71a52cba035483d6331'
+        self.assertRaises(LoginError, lambda: load_stream_url_of_chapter(chapter, old_token))

@@ -44,6 +44,12 @@ def load_stream_url_of_chapter(chapter_id, token):
     cookies = {'remember_user_token': token}
     response = requests.get(url, cookies=cookies)
     json = response.json()
+    if not json:
+        raise ValueError('Chapter {0} not found.'.format(str(chapter_id)))
+    if not json[0]['has_access']:
+        raise LoginError('Access denied to chapter {0}'.format(str(chapter_id)))
+    if not json[0]['subject']['versions']['hls']:
+        raise ValueError('No stream url found for chapter {0}'.format(str(chapter_id)))
     return json[0]['subject']['versions']['hls']
 
 
