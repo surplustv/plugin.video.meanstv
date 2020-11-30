@@ -10,9 +10,12 @@ import xbmcplugin
 
 from resources.lib import api
 from resources.lib import settings
+from resources.lib import login
+from resources.lib import helper
 from resources.lib.model import SearchItem
 
 # Get the plugin handle as an integer number.
+
 _HANDLE = int(sys.argv[1])
 
 _STREAM_PROTOCOL = 'hls'
@@ -38,46 +41,50 @@ def show_chapter_video(chapter_id):
     Show a video that is a chapter in the collection in kodi
     :param chapter_id: id of the chapter in the collection
     """
-    token = login()
-    if token is not None:
-        url = api.load_stream_url_of_chapter(chapter_id, token)
-        play(url)
-
-
-def login():
-    """
-    Trys to get a token from api with credentials from settings.
-    Shows error message if not successfull.
-    :return token or None if not successfull
-    """
-    (email, password) = settings.get_credentials()
+    helper.log('Play Chapter - ID', chapter_id)
+    url = None
     try:
-        return api.get_token(email, password)
-    except api.LoginError as err:
-        msg = str(err)
-    except Exception: # pylint: disable=broad-except
-        msg = "Unexpected Error"
-    dialog = xbmcgui.Dialog()
-    dialog.notification('Login failed', msg, xbmcgui.NOTIFICATION_ERROR, 5000, True)
-    return None
+        url = _get_stream_url(chapter_id)
+        helper.log('Play Chapter - URL', url)
+        if url:
+            _play(url)
+    except Exception as err: # pylint: disable=broad-except
+        helper.show_error_notification(str(err), 'Playback failed')
 
 
-def play(url):
+def _get_stream_url(chapter_id):
+    """
+    Trys to get the stream url of a chapter. If first try fails, shows login dialog and trys again.
+    :param chapter_id: chapter id
+    :return stream url or None if not successful at all
+    """
+    try:
+        token = settings.get_token()
+        return api.load_stream_url_of_chapter(chapter_id, token)
+    except api.LoginError:
+        login.show_login_dialog()
+        token = settings.get_token()
+        if token:
+            return api.load_stream_url_of_chapter(chapter_id, token)
+        return None
+
+
+def _play(url):
     """
     Starts playing a video from a stream url
     :param url: stream url
+    :raise ImportError
     """
-    try:
-        import inputstreamhelper
-        is_helper = inputstreamhelper.Helper('mpd', drm='widevine')
-        if is_helper.check_inputstream():
-            play_item = xbmcgui.ListItem(path=url)
-            play_item.setProperty('inputstreamaddon', 'inputstream.adaptive')
-            play_item.setProperty('inputstream.adaptive.manifest_type', 'hls')
-            play_item.setProperty(_INPUTSTREAM_PROPERTY, is_helper.inputstream_addon)
-            xbmcplugin.setResolvedUrl(_HANDLE, True, play_item)
-    except ImportError:
-        xbmc.log('Failed to load inputstream helper')
+    import inputstreamhelper # pylint: disable=import-error
+    is_helper = inputstreamhelper.Helper('mpd', drm='widevine')
+    if is_helper.check_inputstream():
+        play_item = xbmcgui.ListItem(path=url)
+        play_item.setProperty('inputstreamaddon', 'inputstream.adaptive')
+        play_item.setProperty('inputstream.adaptive.manifest_type', 'hls')
+        play_item.setProperty(_INPUTSTREAM_PROPERTY, is_helper.inputstream_addon)
+        xbmcplugin.setResolvedUrl(_HANDLE, True, play_item)
+    else:
+        raise RuntimeError('Inputstream check failed')
 
 
 def list_collection(permalink):
