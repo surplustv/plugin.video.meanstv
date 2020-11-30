@@ -18,6 +18,9 @@ provider-name="surplustv">
   <assets>
     <icon>icon.png</icon>
   </assets>
+  <platform>all</platform>
+  <website>https://means.tv</website>
+  <source>https://github.com/surplustv/plugin.video.meanstv</source>
   <news>First implementation</news>
 </extension>
 </addon>
