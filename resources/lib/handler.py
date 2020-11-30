@@ -1,6 +1,7 @@
 """
 Module to handle UI requests
 """
+from __future__ import absolute_import
 import sys
 
 import xbmc
@@ -14,6 +15,7 @@ from resources.lib import helper
 from resources.lib.model import SearchItem
 
 # Get the plugin handle as an integer number.
+
 _HANDLE = int(sys.argv[1])
 
 _STREAM_PROTOCOL = 'hls'
@@ -47,7 +49,7 @@ def show_chapter_video(chapter_id):
         if url:
             _play(url)
     except Exception as err: # pylint: disable=broad-except
-        helper.show_error_notification(err.message, 'Playback failed')
+        helper.show_error_notification(str(err), 'Playback failed')
 
 
 def _get_stream_url(chapter_id):

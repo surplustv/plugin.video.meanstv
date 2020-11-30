@@ -1,6 +1,7 @@
 """
 Module for all means TV api access
 """
+from __future__ import absolute_import
 import requests
 
 from resources.lib.model import Video, Collection, ChapterVideo, Category

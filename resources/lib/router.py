@@ -1,7 +1,11 @@
 """
 Route requests to plugin functionality
 """
-from urlparse import parse_qsl
+from __future__ import absolute_import
+try:
+    from urllib.parse import parse_qsl
+except ImportError:
+    from urlparse import parse_qsl
 
 from resources.lib import handler
 from resources.lib import login

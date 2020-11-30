@@ -1,6 +1,7 @@
 """
 Addon settings module
 """
+from __future__ import absolute_import
 import xbmcaddon
 
 _ADDON = xbmcaddon.Addon()
