@@ -1,7 +1,7 @@
 """
 Module with UI helpers
 """
-
+from __future__ import absolute_import
 import xbmc
 import xbmcgui
 
