@@ -16,7 +16,8 @@ provider-name="surplustv">
   <description lang="en_GB">Means TV is the world’s first worker-owned, post-capitalist streaming service.</description>
   <disclaimer lang="en_GB">Unofficial plugin. All videos are owned by Means TV</disclaimer>
   <assets>
-    <icon>icon.png</icon>
+    <icon>resources/icon.png</icon>
+    <fanart>resources/fanart.png</fanart>
   </assets>
   <platform>all</platform>
   <website>https://means.tv</website>
