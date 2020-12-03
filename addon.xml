@@ -22,6 +22,7 @@ provider-name="surplustv">
   <platform>all</platform>
   <website>https://means.tv</website>
   <source>https://github.com/surplustv/plugin.video.meanstv</source>
+  <license>MIT</license>
   <news>First implementation</news>
 </extension>
 </addon>
