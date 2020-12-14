@@ -2,6 +2,8 @@
 
 good-names=id
 
+max-line-length=120
+
 [DESIGN]
 
 min-public-methods=1

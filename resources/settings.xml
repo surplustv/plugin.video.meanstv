@@ -5,6 +5,8 @@
         <setting id="email" type="text" label="Email" default="" enable="false" subsetting="true" visible="!eq(0,)" />
         <setting id="login_time" type="text" label="Sign In Time" default="" enable="false" subsetting="true" visible="!eq(0,)" />
         <setting id="logout" type="action" label="SIGN OUT" action="RunPlugin(plugin://plugin.video.meanstv/?show=logout)" visible="!eq(-2,)" />
+        <setting id="password" type="text" label="Password" default="" visible="false" />
+        <setting id="delete_password" type="action" label="DELETE PASSWORD" action="RunPlugin(plugin://plugin.video.meanstv/?show=delete_password)" visible="!eq(-1,)" />
         <setting id="remember_user_token" type="text" label="Token" default="" visible="false" />
     </category>
 </settings>

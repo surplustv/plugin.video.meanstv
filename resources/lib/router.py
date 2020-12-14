@@ -37,6 +37,8 @@ def route(paramstring):
             login.show_login_dialog()
         elif params['show'] == 'logout':
             login.show_logout_dialog()
+        elif params['show'] == 'delete_password':
+            handler.delete_password()
         else:
             raise ValueError('Invalid paramstring: {0}!'.format(paramstring))
     else:
