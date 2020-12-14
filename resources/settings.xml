@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
-    <category label="Means.TV User">
-        <setting id="login" type="action" label="SIGN IN" action="RunPlugin(plugin://plugin.video.meanstv/?show=login)" />        
-        <setting id="email" type="text" label="Email" default="" enable="false" subsetting="true" visible="!eq(0,)" />
-        <setting id="login_time" type="text" label="Sign In Time" default="" enable="false" subsetting="true" visible="!eq(0,)" />
-        <setting id="logout" type="action" label="SIGN OUT" action="RunPlugin(plugin://plugin.video.meanstv/?show=logout)" visible="!eq(-2,)" />
+    <category label="30000">
+        <setting id="login" type="action" label="30001" action="RunPlugin(plugin://plugin.video.meanstv/?show=login)" />
+        <setting id="email" type="text" label="30002" default="" enable="false" subsetting="true" visible="!eq(0,)" />
+        <setting id="login_time" type="text" label="30003" default="" enable="false" subsetting="true" visible="!eq(0,)" />
+        <setting id="logout" type="action" label="30004" action="RunPlugin(plugin://plugin.video.meanstv/?show=logout)" visible="!eq(-2,)" />
         <setting id="password" type="text" label="Password" default="" visible="false" />
         <setting id="delete_password" type="action" label="DELETE PASSWORD" action="RunPlugin(plugin://plugin.video.meanstv/?show=delete_password)" visible="!eq(-1,)" />
         <setting id="remember_user_token" type="text" label="Token" default="" visible="false" />

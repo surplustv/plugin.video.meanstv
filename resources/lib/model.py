@@ -4,9 +4,11 @@ Model classes
 from __future__ import absolute_import
 import sys
 
+import xbmcaddon
 import xbmcgui
 from resources.lib import formatting
 
+_ADDON = xbmcaddon.Addon()
 _URL = sys.argv[0]
 
 
@@ -151,8 +153,8 @@ class SearchItem(object):
         """
         :return: directory item tuple
         """
-        search_item = xbmcgui.ListItem(label='Search')
-        search_item.setInfo('video', {'title': 'Search'})
+        search_item = xbmcgui.ListItem(label=_ADDON.getLocalizedString(30130))
+        search_item.setInfo('video', {'title': _ADDON.getLocalizedString(30130)})
         # list_item.setProperty('IsPlayable', 'true')
         url = _URL + '?show=search'
         return url, search_item, True

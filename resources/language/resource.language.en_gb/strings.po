@@ -1,0 +1,86 @@
+# Kodi Media Center language file
+# Addon Name: Means.TV
+# Addon id: plugin.video.meanstv
+# Addon Provider: surplustv
+
+
+msgid ""
+msgstr ""
+
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en_GB\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30000"
+msgid "Means.TV User"
+msgstr ""
+
+msgctxt "#30001"
+msgid "Sign In"
+msgstr ""
+
+msgctxt "#30002"
+msgid "E-Mail"
+msgstr ""
+
+msgctxt "#30003"
+msgid "Sign In Time"
+msgstr ""
+
+msgctxt "#30004"
+msgid "Sign Out"
+msgstr ""
+
+msgctxt "#30100"
+msgid "E-Mail"
+msgstr ""
+
+msgctxt "#30101"
+msgid "Password"
+msgstr ""
+
+msgctxt "#30102"
+msgid "Login failed"
+msgstr ""
+
+msgctxt "#30103"
+msgid "Unexpected Error"
+msgstr ""
+
+msgctxt "#30104"
+msgid "Signed in: {0}"
+msgstr ""
+
+msgctxt "#30105"
+msgid "Sign out: {0}?"
+msgstr ""
+
+msgctxt "#30106"
+msgid "Signed out"
+msgstr ""
+
+msgctxt "#30120"
+msgid "Playback failed"
+msgstr ""
+
+msgctxt "#30121"
+msgid "Category Contents"
+msgstr ""
+
+msgctxt "#30122"
+msgid "Search for"
+msgstr ""
+
+msgctxt "#30123"
+msgid "Search results"
+msgstr ""
+
+msgctxt "#30124"
+msgid "Categories"
+msgstr ""
+
+msgctxt "#30130"
+msgid "Search"
+msgstr ""

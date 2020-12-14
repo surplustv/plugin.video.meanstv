@@ -6,12 +6,14 @@ from __future__ import absolute_import
 from datetime import datetime
 
 import xbmc
+import xbmcaddon
 import xbmcgui
 
 from resources.lib import api
 from resources.lib import helper
 from resources.lib import settings
 
+_ADDON = xbmcaddon.Addon()
 
 def show_login_dialog():
     '''
@@ -29,7 +31,7 @@ def show_login_dialog():
                 settings.set_email(email)
                 settings.set_login_time(datetime.now().strftime("%Y-%m-%d %H:%M"))
                 settings.set_token(token)
-                helper.show_info_notification('Signed in: {0}'.format(email))
+                helper.show_info_notification(_ADDON.getLocalizedString(30104).format(email))
                 if _store_password():
                     settings.set_password(password)
 
@@ -40,7 +42,7 @@ def _enter_email():
     :return: entered email address
     '''
     old_email = settings.get_email()
-    dialog = xbmc.Keyboard(old_email, 'Email')
+    dialog = xbmc.Keyboard(old_email, _ADDON.getLocalizedString(30100))
     dialog.doModal()
     if dialog.isConfirmed():
         return dialog.getText().strip()
@@ -52,7 +54,7 @@ def _enter_password():
     Open dialog for password
     :return: entered password
     """
-    dialog = xbmc.Keyboard('', 'Password', True)
+    dialog = xbmc.Keyboard('', _ADDON.getLocalizedString(30101), True)
     dialog.doModal(60000)
     if dialog.isConfirmed():
         return dialog.getText()
@@ -79,9 +81,9 @@ def _login(email, password):
     try:
         return api.get_token(email, password)
     except api.LoginError as err:
-        helper.show_error_notification(err, 'Login failed')
+        helper.show_error_notification(err, _ADDON.getLocalizedString(30102))
     except Exception: # pylint: disable=broad-except
-        helper.show_error_notification('Unexpected Error', 'Login failed')
+        helper.show_error_notification(_ADDON.getLocalizedString(30103), _ADDON.getLocalizedString(30102))
     return None
 
 
@@ -94,13 +96,13 @@ def show_logout_dialog():
     email = settings.get_email()
     if email:
         dialog = xbmcgui.Dialog()
-        confirmed = dialog.yesno(helper.DIALOG_HEADING, 'Sign out: {0}?'.format(email))
+        confirmed = dialog.yesno(helper.DIALOG_HEADING, _ADDON.getLocalizedString(30105).format(email))
         if confirmed:
             settings.set_email('')
             settings.set_login_time('')
             settings.set_token('')
             settings.set_password('')
-            helper.show_info_notification('Signed out')
+            helper.show_info_notification(_ADDON.getLocalizedString(30106))
 
 
 def login_with_stored_credentials():
