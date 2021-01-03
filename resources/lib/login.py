@@ -99,6 +99,7 @@ def show_logout_dialog():
             settings.set_email('')
             settings.set_login_time('')
             settings.set_token('')
+            settings.set_password('')
             helper.show_info_notification('Signed out')
 
 
