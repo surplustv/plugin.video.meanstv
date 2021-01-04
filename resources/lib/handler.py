@@ -54,7 +54,8 @@ def show_chapter_video(chapter_id):
 
 def _get_stream_url(chapter_id):
     """
-    Trys to get the stream url of a chapter. If first try fails, shows login dialog and trys again.
+    Tries to get the stream url of a chapter. If first try fails, tries to re-login (stored credentials and/or dialog)
+     and tries to get the url again.
     :param chapter_id: chapter id
     :return stream url or None if not successful at all
     """
@@ -62,8 +63,12 @@ def _get_stream_url(chapter_id):
         token = settings.get_token()
         return api.load_stream_url_of_chapter(chapter_id, token)
     except api.LoginError:
-        login.show_login_dialog()
+        settings.set_token('')
+        login.login_with_stored_credentials()
         token = settings.get_token()
+        if not token:
+            login.show_login_dialog()
+            token = settings.get_token()
         if token:
             return api.load_stream_url_of_chapter(chapter_id, token)
         return None
@@ -154,3 +159,11 @@ def list_categories():
     directory_items = [c.to_directory_item() for c in categories]
     xbmcplugin.addDirectoryItems(_HANDLE, directory_items, len(directory_items))
     xbmcplugin.endOfDirectory(_HANDLE)
+
+
+def delete_password():
+    """
+    Delete the saved password
+    """
+    settings.set_password('')
+    helper.show_info_notification('Successfully deleted stored password')

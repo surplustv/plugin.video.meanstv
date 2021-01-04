@@ -47,3 +47,16 @@ def set_login_time(time):
     :param: time: login time as formatted string
     """
     return _ADDON.setSetting('login_time', time)
+
+def get_password():
+    """
+    get saved password for login
+    """
+    return _ADDON.getSetting('password')
+
+def set_password(password):
+    """
+    set password for login
+    :param: password: password for login
+    """
+    return _ADDON.setSetting('password', password)
