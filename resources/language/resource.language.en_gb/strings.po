@@ -33,6 +33,10 @@ msgctxt "#30004"
 msgid "Sign Out"
 msgstr ""
 
+msgctxt "#30005"
+msgid "Delete Password"
+msgstr ""
+
 msgctxt "#30100"
 msgid "E-Mail"
 msgstr ""
