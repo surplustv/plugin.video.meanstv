@@ -68,7 +68,7 @@ def _store_password():
     """
     dialog = xbmcgui.Dialog()
     return dialog.yesno(_ADDON.getLocalizedString(30140), 
-                        _ADDON.getLocalizedString(30141) + ' ' + _ADDON.getLocalizedString(30142) + ' ' + _ADDON.getLocalizedString(30143))
+                        _ADDON.getLocalizedString(30141) + '\n' + _ADDON.getLocalizedString(30142) + ' ' + _ADDON.getLocalizedString(30143))
 
 
 def _login(email, password):
