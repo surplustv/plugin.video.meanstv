@@ -67,8 +67,10 @@ def _store_password():
     :return: True if it should be stored, False otherwise
     """
     dialog = xbmcgui.Dialog()
-    return dialog.yesno(_ADDON.getLocalizedString(30140), 
-                        _ADDON.getLocalizedString(30141) + '\n' + _ADDON.getLocalizedString(30142) + ' ' + _ADDON.getLocalizedString(30143))
+    return dialog.yesno(_ADDON.getLocalizedString(30140),
+                        _ADDON.getLocalizedString(30141) + '\n'
+                        + _ADDON.getLocalizedString(30142) + ' '
+                        + _ADDON.getLocalizedString(30143))
 
 
 def _login(email, password):
