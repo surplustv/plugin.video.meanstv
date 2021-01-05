@@ -87,3 +87,19 @@ msgstr "Kategorien"
 msgctxt "#30130"
 msgid "Search"
 msgstr "Suche"
+
+msgctxt "#30140"
+msgid "Save Password"
+msgstr "Passwort speichern"
+
+msgctxt "#30141"
+msgid "Do you want to save the password?"
+msgstr "Möchtest Du das Passwort speichern?"
+
+msgctxt "#30142"
+msgid "This is not required and not recommended as the password will be stored unencrypted."
+msgstr "Dies ist weder notwendig noch empfohlen, da das Passwort unverschlüsselt gespeichert wird."
+
+msgctxt "#30143"
+msgid "If stored, the password will be used for automatic login, when the login token expires."
+msgstr "Wenn es gespeichert wird, wird es dazu verwendet, Dich automatisch wieder anzumelden, wenn der Zugangstoken abgelaufen ist."

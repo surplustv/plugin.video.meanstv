@@ -67,9 +67,8 @@ def _store_password():
     :return: True if it should be stored, False otherwise
     """
     dialog = xbmcgui.Dialog()
-    return dialog.yesno('Save password', 'Do you want to save the password?',
-                        'This is not required and not recommended as the password will be stored unencrypted. '
-                        'If stored, the password will be used for automatic login, when the login token expires.')
+    return dialog.yesno(_ADDON.getLocalizedString(30140), 
+                        _ADDON.getLocalizedString(30141) + ' ' + _ADDON.getLocalizedString(30142) + ' ' + _ADDON.getLocalizedString(30143))
 
 
 def _login(email, password):
