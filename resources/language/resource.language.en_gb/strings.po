@@ -85,6 +85,10 @@ msgctxt "#30124"
 msgid "Categories"
 msgstr ""
 
+msgctxt "#30125"
+msgid "Successfully deleted stored password"
+msgstr ""
+
 msgctxt "#30130"
 msgid "Search"
 msgstr ""

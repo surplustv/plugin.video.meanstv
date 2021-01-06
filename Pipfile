@@ -10,6 +10,7 @@ requests-mock = "*"
 
 [packages]
 requests = "*"
+future = "*"
 
 [requires]
 python_version = "2.7"

@@ -168,4 +168,4 @@ def delete_password():
     Delete the saved password
     """
     settings.set_password('')
-    helper.show_info_notification('Successfully deleted stored password')
+    helper.show_info_notification(_ADDON.getLocalizedString(30125))
