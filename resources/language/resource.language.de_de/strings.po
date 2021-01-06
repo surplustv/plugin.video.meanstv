@@ -1,0 +1,109 @@
+# Kodi Media Center language file
+# Addon Name: Means.TV
+# Addon id: plugin.video.meanstv
+# Addon Provider: surplustv
+
+msgid ""
+msgstr ""
+
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de_DE\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30000"
+msgid "Means.TV User"
+msgstr "Means.TV Benutzer"
+
+msgctxt "#30001"
+msgid "Sign In"
+msgstr "Anmelden"
+
+msgctxt "#30002"
+msgid "E-Mail"
+msgstr "E-Mail"
+
+msgctxt "#30003"
+msgid "Sign In Time"
+msgstr "Angemeldet seit"
+
+msgctxt "#30004"
+msgid "Sign Out"
+msgstr "Abmelden"
+
+msgctxt "#30005"
+msgid "Delete Password"
+msgstr "Passwort löschen"
+
+msgctxt "#30100"
+msgid "E-Mail"
+msgstr "E-Mail"
+
+msgctxt "#30101"
+msgid "Password"
+msgstr "Passwort"
+
+msgctxt "#30102"
+msgid "Login failed"
+msgstr "Anmeldung fehlgeschlagen"
+
+msgctxt "#30103"
+msgid "Unexpected Error"
+msgstr "Unerwarteter Fehler"
+
+msgctxt "#30104"
+msgid "Signed in: {0}"
+msgstr "Angemeldet als {0}"
+
+msgctxt "#30105"
+msgid "Sign out: {0}?"
+msgstr "Abmelden: {0}?"
+
+msgctxt "#30106"
+msgid "Signed out"
+msgstr "Abgemeldet"
+
+msgctxt "#30120"
+msgid "Playback failed"
+msgstr "Wiedergabe fehlgeschlagen"
+
+msgctxt "#30121"
+msgid "Category Contents"
+msgstr "Kategorieninhalte"
+
+msgctxt "#30122"
+msgid "Search for"
+msgstr "Suche nach"
+
+msgctxt "#30123"
+msgid "Search results"
+msgstr "Suchergebnisse"
+
+msgctxt "#30124"
+msgid "Categories"
+msgstr "Kategorien"
+
+msgctxt "#30125"
+msgid "Successfully deleted stored password"
+msgstr "Passwort wurde gelöscht"
+
+msgctxt "#30130"
+msgid "Search"
+msgstr "Suche"
+
+msgctxt "#30140"
+msgid "Save Password"
+msgstr "Passwort speichern"
+
+msgctxt "#30141"
+msgid "Do you want to save the password?"
+msgstr "Möchtest Du das Passwort speichern?"
+
+msgctxt "#30142"
+msgid "This is not required and not recommended as the password will be stored unencrypted."
+msgstr "Dies ist weder notwendig noch empfohlen, da das Passwort unverschlüsselt gespeichert wird."
+
+msgctxt "#30143"
+msgid "If stored, the password will be used for automatic login, when the login token expires."
+msgstr "Wenn es gespeichert wird, wird es dazu verwendet, Dich automatisch wieder anzumelden, wenn der Zugangstoken abgelaufen ist."

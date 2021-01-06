@@ -2,6 +2,7 @@
 Module with UI helpers
 """
 from __future__ import absolute_import
+from builtins import str
 import xbmc
 import xbmcgui
 

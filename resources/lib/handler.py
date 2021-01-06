@@ -5,6 +5,7 @@ from __future__ import absolute_import
 import sys
 
 import xbmc
+import xbmcaddon
 import xbmcgui
 import xbmcplugin
 
@@ -17,6 +18,7 @@ from resources.lib.model import SearchItem
 # Get the plugin handle as an integer number.
 
 _HANDLE = int(sys.argv[1])
+_ADDON = xbmcaddon.Addon()
 
 _STREAM_PROTOCOL = 'hls'
 _KODI_VERSION_MAJOR = int(xbmc.getInfoLabel('System.BuildVersion').split('.')[0])
@@ -49,7 +51,7 @@ def show_chapter_video(chapter_id):
         if url:
             _play(url)
     except Exception as err: # pylint: disable=broad-except
-        helper.show_error_notification(str(err), 'Playback failed')
+        helper.show_error_notification(str(err), _ADDON.getLocalizedString(30120))
 
 
 def _get_stream_url(chapter_id):
@@ -96,7 +98,7 @@ def list_collection(permalink):
     """
     List collection videos
     """
-    xbmcplugin.setPluginCategory(_HANDLE, 'Category Contents')
+    xbmcplugin.setPluginCategory(_HANDLE, _ADDON.getLocalizedString(30121))
     xbmcplugin.setContent(_HANDLE, 'videos')
     collection = api.load_collection(permalink)
     videos = api.load_chapters(collection.chapter_ids)
@@ -113,7 +115,7 @@ def list_category_contents(category_id):
     """
     List contents of a category
     """
-    xbmcplugin.setPluginCategory(_HANDLE, 'Category Contents')
+    xbmcplugin.setPluginCategory(_HANDLE, _ADDON.getLocalizedString(30121))
     xbmcplugin.setContent(_HANDLE, 'videos')
     contents = api.load_category_contents(category_id)
     directory_items = [c.to_directory_item() for c in contents]
@@ -127,7 +129,7 @@ def search():
     Show user search dialog and perform search if they enter a query
     :return:
     """
-    keyboard = xbmc.Keyboard('', 'Search for', False)
+    keyboard = xbmc.Keyboard('', _ADDON.getLocalizedString(30122), False)
     keyboard.setDefault('')
     keyboard.doModal()
 
@@ -140,7 +142,7 @@ def list_search_results(query):
     """
     Get search results and show them
     """
-    xbmcplugin.setPluginCategory(_HANDLE, 'Search results')
+    xbmcplugin.setPluginCategory(_HANDLE, _ADDON.getLocalizedString(30123))
     xbmcplugin.setContent(_HANDLE, 'videos')
     contents = api.get_search_results(query)
     directory_items = [c.to_directory_item() for c in contents]
@@ -152,7 +154,7 @@ def list_categories():
     """
     List all categories
     """
-    xbmcplugin.setPluginCategory(_HANDLE, 'Categories')
+    xbmcplugin.setPluginCategory(_HANDLE, _ADDON.getLocalizedString(30124))
     xbmcplugin.setContent(_HANDLE, 'videos')
     categories = api.load_categories()
     categories.insert(0, SearchItem())
@@ -166,4 +168,4 @@ def delete_password():
     Delete the saved password
     """
     settings.set_password('')
-    helper.show_info_notification('Successfully deleted stored password')
+    helper.show_info_notification(_ADDON.getLocalizedString(30125))
