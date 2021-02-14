@@ -2,8 +2,13 @@
 
 Kodi plugin to play videos from [means.tv](https://means.tv)
 
-**Work in progress: Not fully functional yet**
+## Disclaimer
 
+This plugin is not officially commissioned or supported by Means TV. Any trademarks used belong to their owning companies & organisations.
+
+## License
+
+This add-on is licensed under the MIT License. Please see the LICENSE.txt file for details.
 
 ## Development
 

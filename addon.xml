@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon id="plugin.video.meanstv"
-version="0.1.0"
+version="1.0.0"
 name="Means TV"
 provider-name="surplustv">
 <requires>
@@ -27,6 +27,6 @@ provider-name="surplustv">
   <website>https://means.tv</website>
   <source>https://github.com/surplustv/plugin.video.meanstv</source>
   <license>MIT</license>
-  <news>First implementation</news>
+  <news>First release of the Means TV plugin</news>
 </extension>
 </addon>
