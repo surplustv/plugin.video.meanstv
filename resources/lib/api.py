@@ -6,7 +6,10 @@ import requests
 
 from resources.lib.model import Video, Collection, ChapterVideo, Category
 
+_FASTLY_ORIGIN_HEADER = 'X-Fastly-Origin'
+_FASTLY_ORIGIN_HEADER_VALUE = 'meansmediatv'
 _MEANS_TV_BASE_URL = 'https://means.tv/api'
+
 
 class LoginError(Exception):
     """
@@ -64,7 +67,7 @@ def load_chapters(chapters):
     url = _MEANS_TV_BASE_URL + '/chapters/?ids[]=' + chapters_str
     response = requests.get(url)
     json_list = response.json()
-    return [ChapterVideo(item) for item in json_list]
+    return [ChapterVideo(item) for item in json_list if item['chapter_type'] == 'video']
 
 
 def load_category_contents(category_id):
@@ -85,7 +88,7 @@ def load_categories():
     :return: list of :class:`Category`
     """
     url = _MEANS_TV_BASE_URL + '/categories'
-    response = requests.get(url)
+    response = requests.get(url, headers={_FASTLY_ORIGIN_HEADER: _FASTLY_ORIGIN_HEADER_VALUE})
     json_list = response.json()
     return [Category(item) for item in json_list]
 

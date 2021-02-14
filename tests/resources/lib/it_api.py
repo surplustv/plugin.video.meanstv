@@ -1,8 +1,7 @@
-from __builtin__ import isinstance
 from unittest import TestCase
 
-from resources.lib.api import load_collection, load_chapters, get_token, load_stream_url_of_chapter, LoginError
-from resources.lib.model import ChapterVideo
+from resources.lib.api import load_collection, load_chapters, get_token, load_stream_url_of_chapter, LoginError, \
+    load_categories
 
 
 class LoadChapterIdsForCollectionIntegrationTestCase(TestCase):
@@ -65,3 +64,12 @@ class LoadStreamUrlOfChapter(TestCase):
         chapter = 1206515
         old_token = 'W1szODU1NTI0XSwiJDJhJDEwJEN6VWtDSFFneWRJSzhHZUx6ak0vVWUiLCIxNTk5NDExMTI1LjE4ODkxOTUiXQ%3D%3D--bd84f8019a8dff072dc6a71a52cba035483d6331'
         self.assertRaises(LoginError, lambda: load_stream_url_of_chapter(chapter, old_token))
+
+
+class LoadCategories(TestCase):
+
+    def test_load_categories(self):
+        categories = load_categories()
+        self.assertGreater(len(categories), 0)
+        self.assertTrue(all(category for category in categories if category.title), "All categories should have a title")
+        self.assertTrue(all(category for category in categories if category.id), "All categories should have an id")
