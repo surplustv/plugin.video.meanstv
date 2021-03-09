@@ -39,9 +39,9 @@ class LoadChapterDetailsTestCase(TestCase):
         # https://means.tv/programs/latm?categoryId=20473
         with open(_LATM_CHAPTERS_JSON, "r") as response_file:
             response_json = json.load(response_file)
-            m.get('https://means.tv/api/chapters/?ids%5B%5D=1119397&ids%5B%5D=1119398&ids%5B%5D=1119399&ids%5B%5D=1119400&ids%5B%5D=1119401&ids%5B%5D=1119402&ids%5B%5D=1119404',
+            m.get('https://means.tv/api/chapters/?ids%5B%5D=1119397&ids%5B%5D=1119398&ids%5B%5D=1119399&ids%5B%5D=1119400&ids%5B%5D=1119401&ids%5B%5D=1119402&ids%5B%5D=1119404&ids%5B%5D=1711409',
                   json=response_json)
-        chapters = load_chapters([1119397, 1119398, 1119399, 1119400, 1119401, 1119402, 1119404])
+        chapters = load_chapters([1119397, 1119398, 1119399, 1119400, 1119401, 1119402, 1119404, 1711409])
         self.assertEquals(len(chapters), 7)
         self.assertTrue(all([isinstance(c, ChapterVideo) for c in chapters]))
         self.assertEquals(chapters[0].title, 'Episode 1 - Arizona')
