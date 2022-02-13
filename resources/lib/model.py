@@ -17,8 +17,8 @@ class Collection(object):
     The meta data of a collection
     """
     def __init__(self, json):
-        # self.id = json['permalink']
         self.id = json['id']
+        self.permalink = json['permalink']
         self.title = json['title']
         self.thumb = json['main_poster_featured']
         self.description = json['description']

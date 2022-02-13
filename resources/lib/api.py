@@ -2,13 +2,15 @@
 Module for all means TV api access
 """
 from __future__ import absolute_import
+from resources.lib import helper
 import requests
 
 from resources.lib.model import Video, Collection, ChapterVideo, Category
 
-_FASTLY_ORIGIN_HEADER = 'X-Fastly-Origin'
+_FASTLY_ORIGIN_HEADER_NAME = 'X-Fastly-Origin'
 _FASTLY_ORIGIN_HEADER_VALUE = 'meansmediatv'
-_MEANS_TV_BASE_URL = 'https://api-u-alpha.global.ssl.fastly.net/api'
+_FASTLY_ORIGIN_HEADER = {_FASTLY_ORIGIN_HEADER_NAME: _FASTLY_ORIGIN_HEADER_VALUE}
+_MEANS_TV_BASE_URL_FASTLY = 'https://api-u-alpha.global.ssl.fastly.net/api'
 _MEANS_TV_BASE_URL_WEBSITE = 'https://means.tv/api'
 
 
@@ -32,8 +34,9 @@ def load_collection(permalink):
     :param permalink: permalink id of collection
     :return: :class: `Collection`
     """
-    url = _MEANS_TV_BASE_URL + '/contents/' + permalink
-    response = requests.get(url, headers={_FASTLY_ORIGIN_HEADER: _FASTLY_ORIGIN_HEADER_VALUE})
+    url = _MEANS_TV_BASE_URL_FASTLY + '/contents/' + permalink
+    helper.log('load_collection', url)
+    response = requests.get(url, headers=_FASTLY_ORIGIN_HEADER)
     json = response.json()
     return Collection(json)
 
@@ -45,7 +48,7 @@ def load_stream_url_of_chapter(chapter_id, token):
     :param token: login token
     :return: str
     """
-    url = _MEANS_TV_BASE_URL + '/chapters/?ids[]=' + str(chapter_id)
+    url = _MEANS_TV_BASE_URL_FASTLY + '/chapters/?ids[]=' + str(chapter_id)
     cookies = {'remember_user_token': token}
     response = requests.get(url, cookies=cookies)
     json = response.json()
@@ -65,9 +68,9 @@ def load_stream_url_of_chapter2(content_id, chapter_id, token):
     :param token: login token
     :return: str
     """
-    url = _MEANS_TV_BASE_URL + '/chapters/?content_id=' + str(content_id)
-    response = requests.get(url, headers={_FASTLY_ORIGIN_HEADER: _FASTLY_ORIGIN_HEADER_VALUE})
-    json_list = response.json()
+    url = _MEANS_TV_BASE_URL_FASTLY + '/chapters/?content_id=' + str(content_id)
+    response = requests.get(url, headers=_FASTLY_ORIGIN_HEADER)
+    json = response.json()
     if not json:
         raise ValueError('Chapter {0} not found.'.format(str(chapter_id)))
     if not json[0]['has_access']:
@@ -84,7 +87,7 @@ def load_chapters(chapters):
     :return: list of :class:`ChapterVideo`
     """
     chapters_str = '&ids[]='.join(map(str, chapters))
-    url = _MEANS_TV_BASE_URL + '/chapters/?ids[]=' + chapters_str
+    url = _MEANS_TV_BASE_URL_FASTLY + '/chapters/?ids[]=' + chapters_str
     response = requests.get(url)
     json_list = response.json()
     return [ChapterVideo(item) for item in json_list if item['chapter_type'] == 'video']
@@ -95,8 +98,8 @@ def load_chapters2(content_id):
     :param chapters: list of chapter ids
     :return: list of :class:`ChapterVideo`
     """
-    url = _MEANS_TV_BASE_URL + '/chapters/?content_id=' + str(content_id)
-    response = requests.get(url, headers={_FASTLY_ORIGIN_HEADER: _FASTLY_ORIGIN_HEADER_VALUE})
+    url = _MEANS_TV_BASE_URL_FASTLY + '/chapters/?content_id=' + str(content_id)
+    response = requests.get(url, headers=_FASTLY_ORIGIN_HEADER)
     json_list = response.json()
     return [ChapterVideo(item) for item in json_list if item['chapter_type'] == 'video']
 
@@ -106,8 +109,8 @@ def load_category_contents(category_id):
     :param category_id: id of the category
     :return: mixed list of :class:`Collection` and :class:`Video`
     """
-    url = _MEANS_TV_BASE_URL + '/contents?type=category_preview&category_id=' + str(category_id)
-    response = requests.get(url)
+    url = _MEANS_TV_BASE_URL_FASTLY + '/contents/search?category_id=' + str(category_id)
+    response = requests.get(url, headers=_FASTLY_ORIGIN_HEADER)
     json_list = response.json()
     return [to_category_content(item) for item in json_list]
 
@@ -117,8 +120,8 @@ def load_categories():
     Load categories from API
     :return: list of :class:`Category`
     """
-    url = _MEANS_TV_BASE_URL + '/categories'
-    response = requests.get(url, headers={_FASTLY_ORIGIN_HEADER: _FASTLY_ORIGIN_HEADER_VALUE})
+    url = _MEANS_TV_BASE_URL_FASTLY + '/categories'
+    response = requests.get(url, headers=_FASTLY_ORIGIN_HEADER)
     json_list = response.json()
     return [Category(item) for item in json_list]
 
@@ -147,7 +150,7 @@ def _get_search_results_for_page(query, page):
     :return: list of json
     """
     params = {'search': query, 'page': page}
-    url = _MEANS_TV_BASE_URL + '/contents'
+    url = _MEANS_TV_BASE_URL_FASTLY + '/contents'
     response = requests.get(url, params=params)
     if response.status_code == 200:
         return response.json()
