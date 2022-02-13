@@ -1,5 +1,6 @@
 # Python
 *.pyo
+*.pyc
 
 # Intellij
 *.iml
