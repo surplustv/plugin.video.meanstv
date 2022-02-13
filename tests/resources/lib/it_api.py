@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from resources.lib.api import load_collection, load_chapters, get_token, load_stream_url_of_chapter, LoginError, \
+from resources.lib.api import load_collection, load_chapters, load_chapters2, get_token, load_stream_url_of_chapter, LoginError, \
     load_categories
 
 
@@ -13,14 +13,14 @@ class LoadChapterIdsForCollectionIntegrationTestCase(TestCase):
         self.assertEquals(collection.title, 'Laughter Against The Machine')
         self.assertTrue(collection.thumb)
         self.assertTrue(collection.clean_description().startswith('Laughter Against The Machine'))
-        self.assertEquals(collection.chapter_ids, [1119397, 1119398, 1119399, 1119400, 1119401, 1119402, 1119404])
+        self.assertEquals(collection.chapter_ids, [572685, 572684, 572683, 572680, 572686, 572681, 572688])
 
 
 class LoadChapterDetailsIntegrationTestCase(TestCase):
 
     def test_laughter_against_the_machine(self):
         # Chapters: https://means.tv/programs/latm?categoryId=20473
-        chapters = load_chapters([1119397, 1119398, 1119399, 1119400, 1119401, 1119402, 1119404])
+        chapters = load_chapters2(572687)
         self.assertEquals(len(chapters), 7)
         self.assertEquals(chapters[0].title, 'Episode 1 - Arizona')
         self.assertEquals(chapters[0].position, 1)

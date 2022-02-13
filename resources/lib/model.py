@@ -17,11 +17,12 @@ class Collection(object):
     The meta data of a collection
     """
     def __init__(self, json):
-        self.id = json['permalink']
+        # self.id = json['permalink']
+        self.id = json['id']
         self.title = json['title']
         self.thumb = json['main_poster_featured']
         self.description = json['description']
-        self.chapter_ids = json['chapters'] if 'chapters' in json else []
+        self.chapter_ids = [cv['id'] for cv in json['children_videos']] if 'children_videos' in json else []
 
     def to_directory_item(self):
         """

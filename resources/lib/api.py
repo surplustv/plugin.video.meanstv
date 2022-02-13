@@ -8,7 +8,8 @@ from resources.lib.model import Video, Collection, ChapterVideo, Category
 
 _FASTLY_ORIGIN_HEADER = 'X-Fastly-Origin'
 _FASTLY_ORIGIN_HEADER_VALUE = 'meansmediatv'
-_MEANS_TV_BASE_URL = 'https://means.tv/api'
+_MEANS_TV_BASE_URL = 'https://api-u-alpha.global.ssl.fastly.net/api'
+_MEANS_TV_BASE_URL_WEBSITE = 'https://means.tv/api'
 
 
 class LoginError(Exception):
@@ -32,7 +33,7 @@ def load_collection(permalink):
     :return: :class: `Collection`
     """
     url = _MEANS_TV_BASE_URL + '/contents/' + permalink
-    response = requests.get(url)
+    response = requests.get(url, headers={_FASTLY_ORIGIN_HEADER: _FASTLY_ORIGIN_HEADER_VALUE})
     json = response.json()
     return Collection(json)
 
@@ -57,6 +58,25 @@ def load_stream_url_of_chapter(chapter_id, token):
     return json[0]['subject']['versions']['hls']
 
 
+def load_stream_url_of_chapter2(content_id, chapter_id, token):
+    """
+    Loads the stream URL of a single chapter while being logged in
+    :param chapter_id: id of single chapter
+    :param token: login token
+    :return: str
+    """
+    url = _MEANS_TV_BASE_URL + '/chapters/?content_id=' + str(content_id)
+    response = requests.get(url, headers={_FASTLY_ORIGIN_HEADER: _FASTLY_ORIGIN_HEADER_VALUE})
+    json_list = response.json()
+    if not json:
+        raise ValueError('Chapter {0} not found.'.format(str(chapter_id)))
+    if not json[0]['has_access']:
+        raise LoginError('Access denied to chapter {0}'.format(str(chapter_id)))
+    if not json[0]['subject']['versions']['hls']:
+        raise ValueError('No stream url found for chapter {0}'.format(str(chapter_id)))
+    return json[0]['subject']['versions']['hls']
+
+
 def load_chapters(chapters):
     """
     load the chapter details from the API without being logged in
@@ -69,6 +89,16 @@ def load_chapters(chapters):
     json_list = response.json()
     return [ChapterVideo(item) for item in json_list if item['chapter_type'] == 'video']
 
+def load_chapters2(content_id):
+    """
+    load the chapter details from the API without being logged in
+    :param chapters: list of chapter ids
+    :return: list of :class:`ChapterVideo`
+    """
+    url = _MEANS_TV_BASE_URL + '/chapters/?content_id=' + str(content_id)
+    response = requests.get(url, headers={_FASTLY_ORIGIN_HEADER: _FASTLY_ORIGIN_HEADER_VALUE})
+    json_list = response.json()
+    return [ChapterVideo(item) for item in json_list if item['chapter_type'] == 'video']
 
 def load_category_contents(category_id):
     """
@@ -133,7 +163,7 @@ def get_token(email, password):
     :raises LoginError: when login failed due to invalid credentials
     :raises ValueError: when an unexpected status code is returned by API
     """
-    url = _MEANS_TV_BASE_URL + '/sessions'
+    url = _MEANS_TV_BASE_URL_WEBSITE + '/sessions'
     response = requests.post(url, json={'email': email, 'password': password})
     if response.status_code >= 400:
         if response.status_code == 422:
