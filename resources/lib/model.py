@@ -34,7 +34,7 @@ class Collection(object):
         list_item.setArt({'thumb': self.thumb,
                           'icon': self.thumb,
                           'fanart': self.thumb})
-        url = _URL + '?show=collection&id=' + str(self.id)
+        url = _URL + '?show=collection&id=' + str(self.permalink)
         return url, list_item, True
 
     def clean_description(self):
