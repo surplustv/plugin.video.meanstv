@@ -30,7 +30,7 @@ def route(paramstring):
         elif params['show'] == 'video':
             handler.show_video(params['id'])
         elif params['show'] == 'chapter_video':
-            handler.show_chapter_video(params['id'])
+            handler.show_chapter_video(params['coll'], params['id'])
         elif params['show'] == 'search':
             handler.search()
         elif params['show'] == 'login':

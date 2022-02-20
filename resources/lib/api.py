@@ -69,17 +69,15 @@ def load_stream_url_of_chapter2(content_id, chapter_id, token):
     :param token: login token
     :return: str
     """
-    url = _MEANS_TV_BASE_URL_FASTLY + '/chapters/?content_id=' + str(content_id)
-    helper.log('load_stream_url_of_chapter2', url)    
-    response = requests.get(url, headers=_FASTLY_ORIGIN_HEADER)
-    json = response.json()
-    if not json:
+    chapters = load_chapters2(content_id)
+    filtered = [c for c in chapters if str(c.id) == str(chapter_id)]
+    if len(filtered) == 0:
         raise ValueError('Chapter {0} not found.'.format(str(chapter_id)))
-    if not json[0]['has_access']:
+    if not filtered[0].has_access:
         raise LoginError('Access denied to chapter {0}'.format(str(chapter_id)))
-    if not json[0]['subject']['versions']['hls']:
+    if not filtered[0].stream_url:
         raise ValueError('No stream url found for chapter {0}'.format(str(chapter_id)))
-    return json[0]['subject']['versions']['hls']
+    return filtered[0].stream_url
 
 
 def load_chapters(chapters):

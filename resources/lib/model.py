@@ -51,11 +51,14 @@ class ChapterVideo(object):
 
     def __init__(self, json):
         self.id = json['id']
+        self.collection_id = json['content_id']
         self.position = json['position']
         self.title = json['title']
         self.thumb = json['preview_image']
         self.duration = json['subject']['duration']
         self.description = json['description']
+        self.has_access = json['has_access']
+        self.stream_url = json['subject']['versions']['hls']
 
     def to_directory_item(self):
         """
@@ -70,7 +73,7 @@ class ChapterVideo(object):
                           'icon': self.thumb,
                           'fanart': self.thumb})
         list_item.setProperty('IsPlayable', 'true')
-        url = _URL + '?show=chapter_video&id=' + str(self.id)
+        url = _URL + '?show=chapter_video&coll=' + str(self.collection_id) + '&id=' + str(self.id)
         return url, list_item, False
 
     def duration_to_seconds(self):
