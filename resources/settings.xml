@@ -54,6 +54,7 @@
 				    <allowempty>true</allowempty>
 				  </constraints>
 				  <visible>false</visible>
+          <control type="edit" format="string" />
 				</setting>
 				<setting id="remember_user_token" type="string">
 					<level>0</level>
@@ -62,6 +63,7 @@
 				    <allowempty>true</allowempty>
 				  </constraints>
 				  <visible>false</visible>
+				  <control type="edit" format="string" />
 				</setting>
  				<setting id="delete_password" type="action" label="30005">
 					<level>0</level>
