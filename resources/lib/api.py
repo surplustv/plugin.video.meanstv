@@ -49,6 +49,7 @@ def load_stream_url_of_chapter(chapter_id, token):
     :return: str
     """
     url = _MEANS_TV_BASE_URL_FASTLY + '/chapters/?ids[]=' + str(chapter_id)
+    helper.log('load_stream_url_of_chapter', url)
     cookies = {'remember_user_token': token}
     response = requests.get(url, cookies=cookies)
     json = response.json()
@@ -69,6 +70,7 @@ def load_stream_url_of_chapter2(content_id, chapter_id, token):
     :return: str
     """
     url = _MEANS_TV_BASE_URL_FASTLY + '/chapters/?content_id=' + str(content_id)
+    helper.log('load_stream_url_of_chapter2', url)    
     response = requests.get(url, headers=_FASTLY_ORIGIN_HEADER)
     json = response.json()
     if not json:
@@ -88,6 +90,7 @@ def load_chapters(chapters):
     """
     chapters_str = '&ids[]='.join(map(str, chapters))
     url = _MEANS_TV_BASE_URL_FASTLY + '/chapters/?ids[]=' + chapters_str
+    helper.log('load_chapters', url)
     response = requests.get(url)
     json_list = response.json()
     return [ChapterVideo(item) for item in json_list if item['chapter_type'] == 'video']
@@ -99,6 +102,7 @@ def load_chapters2(content_id):
     :return: list of :class:`ChapterVideo`
     """
     url = _MEANS_TV_BASE_URL_FASTLY + '/chapters/?content_id=' + str(content_id)
+    helper.log('load_chapters2', url)
     response = requests.get(url, headers=_FASTLY_ORIGIN_HEADER)
     json_list = response.json()
     return [ChapterVideo(item) for item in json_list if item['chapter_type'] == 'video']
@@ -110,6 +114,7 @@ def load_category_contents(category_id):
     :return: mixed list of :class:`Collection` and :class:`Video`
     """
     url = _MEANS_TV_BASE_URL_FASTLY + '/contents/search?category_id=' + str(category_id)
+    helper.log('load_category_contents', url)
     response = requests.get(url, headers=_FASTLY_ORIGIN_HEADER)
     json_list = response.json()
     return [to_category_content(item) for item in json_list]
@@ -121,6 +126,7 @@ def load_categories():
     :return: list of :class:`Category`
     """
     url = _MEANS_TV_BASE_URL_FASTLY + '/categories'
+    helper.log('load_categories', url)
     response = requests.get(url, headers=_FASTLY_ORIGIN_HEADER)
     json_list = response.json()
     return [Category(item) for item in json_list]
@@ -151,6 +157,7 @@ def _get_search_results_for_page(query, page):
     """
     params = {'search': query, 'page': page}
     url = _MEANS_TV_BASE_URL_FASTLY + '/contents'
+    helper.log('_get_search_results_for_page', url)
     response = requests.get(url, params=params)
     if response.status_code == 200:
         return response.json()
@@ -167,6 +174,7 @@ def get_token(email, password):
     :raises ValueError: when an unexpected status code is returned by API
     """
     url = _MEANS_TV_BASE_URL_WEBSITE + '/sessions'
+    helper.log('get_token', url)
     response = requests.post(url, json={'email': email, 'password': password})
     if response.status_code >= 400:
         if response.status_code == 422:
