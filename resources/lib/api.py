@@ -48,7 +48,7 @@ def load_stream_url_of_chapter(content_id, chapter_id, token):
     :param token: login token
     :return: str
     """
-    chapters = load_chapters2(content_id, token)
+    chapters = load_chapters(content_id, token)
     filtered = [c for c in chapters if str(c.id) == str(chapter_id)]
     if len(filtered) == 0:
         raise ValueError('Chapter {0} not found.'.format(str(chapter_id)))
@@ -58,21 +58,7 @@ def load_stream_url_of_chapter(content_id, chapter_id, token):
         raise ValueError('No stream url found for chapter {0}'.format(str(chapter_id)))
     return filtered[0].stream_url
 
-
-def load_chapters(chapters):
-    """
-    load the chapter details from the API without being logged in
-    :param chapters: list of chapter ids
-    :return: list of :class:`ChapterVideo`
-    """
-    chapters_str = '&ids[]='.join(map(str, chapters))
-    url = _MEANS_TV_BASE_URL_FASTLY + '/chapters/?ids[]=' + chapters_str
-    helper.log('load_chapters', url)
-    response = requests.get(url)
-    json_list = response.json()
-    return [ChapterVideo(item) for item in json_list if item['chapter_type'] == 'video']
-
-def load_chapters2(content_id, token = None):
+def load_chapters(content_id, token = None):
     """
     load the chapter details from the API without being logged in
     :param chapters: list of chapter ids
@@ -80,7 +66,7 @@ def load_chapters2(content_id, token = None):
     :return: list of :class:`ChapterVideo`
     """
     url = _MEANS_TV_BASE_URL_FASTLY + '/chapters/?content_id=' + str(content_id)
-    helper.log('load_chapters2', url)
+    helper.log('load_chapters', url)
     cookies = {'remember_user_token': token} if token != None else {}
     response = requests.get(url, headers=_FASTLY_ORIGIN_HEADER, cookies=cookies)
     json_list = response.json()

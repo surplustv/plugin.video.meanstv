@@ -102,7 +102,7 @@ def list_collection(permalink):
     xbmcplugin.setPluginCategory(_HANDLE, _ADDON.getLocalizedString(30121))
     xbmcplugin.setContent(_HANDLE, 'videos')
     collection = api.load_collection(permalink)
-    videos = api.load_chapters2(collection.id)
+    videos = api.load_chapters(collection.id)
     for video in videos:
         if not video.description:
             video.description = collection.description
