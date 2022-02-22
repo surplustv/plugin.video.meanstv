@@ -64,7 +64,7 @@ def _get_stream_url(collection_id, chapter_id):
     """
     try:
         token = settings.get_token()
-        return api.load_stream_url_of_chapter2(collection_id, chapter_id, token)
+        return api.load_stream_url_of_chapter(collection_id, chapter_id, token)
     except api.LoginError:
         settings.set_token('')
         login.login_with_stored_credentials()
@@ -73,7 +73,7 @@ def _get_stream_url(collection_id, chapter_id):
             login.show_login_dialog()
             token = settings.get_token()
         if token:
-            return api.load_stream_url_of_chapter2(collection_id, chapter_id, token)
+            return api.load_stream_url_of_chapter(collection_id, chapter_id, token)
         return None
 
 

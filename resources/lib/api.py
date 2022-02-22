@@ -41,28 +41,7 @@ def load_collection(permalink):
     return Collection(json)
 
 
-def load_stream_url_of_chapter(chapter_id, token):
-    """
-    Loads the stream URL of a single chapter while being logged in
-    :param chapter_id: id of single chapter
-    :param token: login token
-    :return: str
-    """
-    url = _MEANS_TV_BASE_URL_FASTLY + '/chapters/?ids[]=' + str(chapter_id)
-    helper.log('load_stream_url_of_chapter', url)
-    cookies = {'remember_user_token': token}
-    response = requests.get(url, cookies=cookies)
-    json = response.json()
-    if not json:
-        raise ValueError('Chapter {0} not found.'.format(str(chapter_id)))
-    if not json[0]['has_access']:
-        raise LoginError('Access denied to chapter {0}'.format(str(chapter_id)))
-    if not json[0]['subject']['versions']['hls']:
-        raise ValueError('No stream url found for chapter {0}'.format(str(chapter_id)))
-    return json[0]['subject']['versions']['hls']
-
-
-def load_stream_url_of_chapter2(content_id, chapter_id, token):
+def load_stream_url_of_chapter(content_id, chapter_id, token):
     """
     Loads the stream URL of a single chapter while being logged in
     :param chapter_id: id of single chapter
