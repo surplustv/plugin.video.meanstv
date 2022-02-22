@@ -126,7 +126,7 @@ def _get_search_results_for_page(query, page):
     response = requests.get(url, params=params)
     if response.status_code == 200:
         return response.json()
-    return ApiError("API returned unknown status code: {0}".format(response.status_code))
+    raise ApiError("API returned unknown status code: {0}".format(response.status_code))
 
 
 def get_token(email, password):
