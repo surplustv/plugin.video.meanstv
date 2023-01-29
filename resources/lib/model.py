@@ -12,7 +12,7 @@ _ADDON = xbmcaddon.Addon()
 _URL = sys.argv[0]
 
 
-class Collection(object):
+class Collection:
     """
     The meta data of a collection
     """
@@ -44,7 +44,7 @@ class Collection(object):
         return formatting.clean_html(self.description)
 
 
-class ChapterVideo(object):
+class ChapterVideo:
     """
     The video chapter of a collection
     """
@@ -89,7 +89,7 @@ class ChapterVideo(object):
         return formatting.clean_html(self.description)
 
 
-class Video(object):
+class Video:
     """
     A single video that is not part of any collection
     """
@@ -129,7 +129,7 @@ class Video(object):
         return formatting.clean_html(self.description)
 
 
-class Category(object):
+class Category:
     """
     Main category from the start page
     """
@@ -148,7 +148,7 @@ class Category(object):
         return url, list_item, True
 
 
-class SearchItem(object):
+class SearchItem:
     """
     Search item in listing to start search dialog
     """
