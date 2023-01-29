@@ -1,6 +1,6 @@
 import json
 import os
-from __builtin__ import isinstance
+from builtins import isinstance
 from unittest import TestCase
 
 import requests_mock
