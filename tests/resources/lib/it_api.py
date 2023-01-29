@@ -9,7 +9,7 @@ class LoadChapterIdsForCollectionIntegrationTestCase(TestCase):
     def test_laughter_against_the_machine(self):
         # Collection: https://means.tv/programs/latm?categoryId=20473
         collection = load_collection('latm')
-        self.assertEqual(collection.id, 'latm')
+        self.assertEqual(collection.id, 572687)
         self.assertEqual(collection.title, 'Laughter Against The Machine')
         self.assertTrue(collection.thumb)
         self.assertTrue(collection.clean_description().startswith('Laughter Against The Machine'))
@@ -50,20 +50,23 @@ class GetTokenTestCase(TestCase):
 class LoadStreamUrlOfChapter(TestCase):
     
     def test_illegal_chapter(self):
-        self.assertRaises(ValueError, lambda: load_stream_url_of_chapter(0, ''))
+        content_id = 572687
+        self.assertRaises(ValueError, lambda: load_stream_url_of_chapter(content_id, 0, ''))
     
     def test_no_token(self):
         # Chapter: https://means.tv/programs/jposadas
-        chapter = 1206515
-        self.assertRaises(LoginError, lambda: load_stream_url_of_chapter(chapter, 'xxx'))
-        self.assertRaises(LoginError, lambda: load_stream_url_of_chapter(chapter, ''))
-        self.assertRaises(LoginError, lambda: load_stream_url_of_chapter(chapter, None))
+        content_id = 572687
+        chapter = 1119398
+        self.assertRaises(LoginError, lambda: load_stream_url_of_chapter(content_id, chapter, 'xxx'))
+        self.assertRaises(LoginError, lambda: load_stream_url_of_chapter(content_id, chapter, ''))
+        self.assertRaises(LoginError, lambda: load_stream_url_of_chapter(content_id, chapter, None))
     
     def test_old_token(self):
         # Chapter: https://means.tv/programs/jposadas
-        chapter = 1206515
+        content_id = 572687
+        chapter = 1119398
         old_token = 'W1szODU1NTI0XSwiJDJhJDEwJEN6VWtDSFFneWRJSzhHZUx6ak0vVWUiLCIxNTk5NDExMTI1LjE4ODkxOTUiXQ%3D%3D--bd84f8019a8dff072dc6a71a52cba035483d6331'
-        self.assertRaises(LoginError, lambda: load_stream_url_of_chapter(chapter, old_token))
+        self.assertRaises(LoginError, lambda: load_stream_url_of_chapter(content_id, chapter, old_token))
 
 
 class LoadCategories(TestCase):
