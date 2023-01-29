@@ -40,6 +40,6 @@ def route(paramstring):
         elif params['show'] == 'delete_password':
             handler.delete_password()
         else:
-            raise ValueError('Invalid paramstring: {0}!'.format(paramstring))
+            raise ValueError(f"Invalid paramstring: {paramstring}!")
     else:
         handler.list_categories()

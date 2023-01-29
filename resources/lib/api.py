@@ -18,15 +18,11 @@ class LoginError(Exception):
     """
     Raised when login fails due to invalid credentials
     """
-    pass
-
 
 class ApiError(Exception):
     """
     Raised when the API behaves in some unexpected way
     """
-    pass
-
 
 def load_collection(permalink):
     """
@@ -50,11 +46,11 @@ def load_stream_url_of_chapter(content_id, chapter_id, token):
     chapters = load_chapters(content_id, token)
     filtered = [c for c in chapters if str(c.id) == str(chapter_id)]
     if len(filtered) == 0:
-        raise ValueError('Chapter {0} not found.'.format(str(chapter_id)))
+        raise ValueError(f"Chapter {chapter_id} not found.")
     if not filtered[0].has_access:
-        raise LoginError('Access denied to chapter {0}'.format(str(chapter_id)))
+        raise LoginError(f"Access denied to chapter {chapter_id}")
     if not filtered[0].stream_url:
-        raise ValueError('No stream url found for chapter {0}'.format(str(chapter_id)))
+        raise ValueError(f"No stream url found for chapter {chapter_id}")
     return filtered[0].stream_url
 
 def load_chapters(content_id, token = None):
@@ -126,7 +122,7 @@ def _getJson(url, params={}, token=None):
     response = requests.get(url, headers=_FASTLY_ORIGIN_HEADER, params=params, cookies=cookies)
     if response.status_code == 200:
         return response.json()
-    raise ApiError("API returned unknown status code: {0}".format(response.status_code))
+    raise ApiError(f"API returned unknown status code: {response.status_code}")
 
 
 def get_token(email, password):
@@ -149,7 +145,7 @@ def get_token(email, password):
                 json = dict()
             if ('email' in json and isinstance(json['email'], list) and json['email']):
                 raise LoginError(json['email'][0])
-        raise ValueError('Unexpected status code {0}'.format(str(response.status_code)))
+        raise ValueError(f"Unexpected status code {response.status_code}")
     return response.cookies['remember_user_token']
 
 
