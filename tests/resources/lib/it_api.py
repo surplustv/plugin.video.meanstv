@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from resources.lib.api import load_collection, load_chapters, load_chapters2, get_token, load_stream_url_of_chapter, LoginError, \
+from resources.lib.api import load_collection, load_chapters, get_token, load_stream_url_of_chapter, LoginError, \
     load_categories
 
 
@@ -20,7 +20,7 @@ class LoadChapterDetailsIntegrationTestCase(TestCase):
 
     def test_laughter_against_the_machine(self):
         # Chapters: https://means.tv/programs/latm?categoryId=20473
-        chapters = load_chapters2(572687)
+        chapters = load_chapters(572687)
         self.assertEquals(len(chapters), 7)
         self.assertEquals(chapters[0].title, 'Episode 1 - Arizona')
         self.assertEquals(chapters[0].position, 1)
