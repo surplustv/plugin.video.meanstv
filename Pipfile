@@ -10,10 +10,9 @@ requests-mock = "*"
 
 [packages]
 requests = "*"
-future = "*"
 
 [requires]
-python_version = "2.7"
+python_version = "3.10"
 
 [scripts]
 lint = "pylint main.py resources"
