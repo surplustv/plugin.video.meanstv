@@ -114,7 +114,7 @@ def _get_search_results_for_page(query, page):
     params = {'search': query, 'page': page}
     url = _MEANS_TV_BASE_URL_FASTLY + '/contents'
     helper.log('_get_search_results_for_page', url)
-    response = _getJson(url, params=params)
+    return _getJson(url, params=params)
 
 
 def _getJson(url, params={}, token=None):
