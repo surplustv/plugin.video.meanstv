@@ -36,8 +36,7 @@ def load_collection(permalink):
     """
     url = _MEANS_TV_BASE_URL_FASTLY + '/contents/' + permalink
     helper.log('load_collection', url)
-    response = requests.get(url, headers=_FASTLY_ORIGIN_HEADER)
-    json = response.json()
+    json = _getJson(url)
     return Collection(json)
 
 
@@ -67,9 +66,7 @@ def load_chapters(content_id, token = None):
     """
     url = _MEANS_TV_BASE_URL_FASTLY + '/chapters/?content_id=' + str(content_id)
     helper.log('load_chapters', url)
-    cookies = {'remember_user_token': token} if token != None else {}
-    response = requests.get(url, headers=_FASTLY_ORIGIN_HEADER, cookies=cookies)
-    json_list = response.json()
+    json_list = _getJson(url, token=token)
     return [ChapterVideo(item) for item in json_list if item['chapter_type'] == 'video']
 
 def load_category_contents(category_id):
@@ -80,8 +77,7 @@ def load_category_contents(category_id):
     """
     url = _MEANS_TV_BASE_URL_FASTLY + '/contents/search?category_id=' + str(category_id)
     helper.log('load_category_contents', url)
-    response = requests.get(url, headers=_FASTLY_ORIGIN_HEADER)
-    json_list = response.json()
+    json_list = _getJson(url)
     return [to_category_content(item) for item in json_list]
 
 
@@ -92,8 +88,7 @@ def load_categories():
     """
     url = _MEANS_TV_BASE_URL_FASTLY + '/categories'
     helper.log('load_categories', url)
-    response = requests.get(url, headers=_FASTLY_ORIGIN_HEADER)
-    json_list = response.json()
+    json_list = _getJson(url)
     return [Category(item) for item in json_list]
 
 
@@ -123,7 +118,12 @@ def _get_search_results_for_page(query, page):
     params = {'search': query, 'page': page}
     url = _MEANS_TV_BASE_URL_FASTLY + '/contents'
     helper.log('_get_search_results_for_page', url)
-    response = requests.get(url, params=params)
+    response = _getJson(url, params=params)
+
+
+def _getJson(url, params={}, token=None):
+    cookies = {'remember_user_token': token} if token != None else {}
+    response = requests.get(url, headers=_FASTLY_ORIGIN_HEADER, params=params, cookies=cookies)
     if response.status_code == 200:
         return response.json()
     raise ApiError("API returned unknown status code: {0}".format(response.status_code))
