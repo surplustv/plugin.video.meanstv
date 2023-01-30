@@ -1,7 +1,6 @@
 """
 Module to handle UI requests
 """
-from __future__ import absolute_import
 import sys
 
 import xbmc
@@ -21,7 +20,7 @@ _HANDLE = int(sys.argv[1])
 _ADDON = xbmcaddon.Addon()
 
 _STREAM_PROTOCOL = 'hls'
-_KODI_VERSION_MAJOR = int(xbmc.getInfoLabel('System.BuildVersion').split('.')[0])
+_KODI_VERSION_MAJOR = int(xbmc.getInfoLabel('System.BuildVersion').split('.', maxsplit=1)[0])
 
 if _KODI_VERSION_MAJOR >= 19:
     _INPUTSTREAM_PROPERTY = 'inputstream'
@@ -35,7 +34,7 @@ def show_video(permalink):
     :param permalink: permalink id of the video
     """
     collection = api.load_collection(permalink)
-    show_chapter_video(collection.chapter_ids[0])
+    show_chapter_video(collection.id, collection.chapter_ids[0])
 
 
 def show_chapter_video(collection_id, chapter_id):
@@ -83,7 +82,7 @@ def _play(url):
     :param url: stream url
     :raise ImportError
     """
-    import inputstreamhelper # pylint: disable=import-error
+    import inputstreamhelper # pylint: disable=import-error, import-outside-toplevel
     is_helper = inputstreamhelper.Helper('mpd', drm='widevine')
     if is_helper.check_inputstream():
         play_item = xbmcgui.ListItem(path=url)

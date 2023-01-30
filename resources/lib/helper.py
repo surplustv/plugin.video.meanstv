@@ -13,7 +13,7 @@ def log(prefix, msg, level=xbmc.LOGDEBUG):
     '''
     Prints a debug message to Kodi log
     '''
-    xbmc.log(f"[{DIALOG_HEADING}] {prefix}:  {msg}")
+    xbmc.log(f"[{DIALOG_HEADING}] {prefix}:  {msg}", level)
 
 
 def show_error_notification(msg, title=''):

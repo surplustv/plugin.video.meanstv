@@ -1,9 +1,8 @@
 """
 Module for all means TV api access
 """
-from __future__ import absolute_import
-from resources.lib import helper
 import requests
+from resources.lib import helper
 
 from resources.lib.model import Video, Collection, ChapterVideo, Category
 
@@ -117,9 +116,10 @@ def _get_search_results_for_page(query, page):
     return _getJson(url, params=params)
 
 
-def _getJson(url, params={}, token=None):
-    cookies = {'remember_user_token': token} if token != None else {}
-    response = requests.get(url, headers=_FASTLY_ORIGIN_HEADER, params=params, cookies=cookies)
+def _getJson(url, params=None, token=None): # pylint: disable=invalid-name
+    params = params if params is not None else {}
+    cookies = {'remember_user_token': token} if token is not None else {}
+    response = requests.get(url, headers=_FASTLY_ORIGIN_HEADER, params=params, cookies=cookies, timeout=20)
     if response.status_code == 200:
         return response.json()
     raise ApiError(f"API returned unknown status code: {response.status_code}")
@@ -136,13 +136,13 @@ def get_token(email, password):
     """
     url = _MEANS_TV_BASE_URL_WEBSITE + '/sessions'
     helper.log('get_token', url)
-    response = requests.post(url, json={'email': email, 'password': password})
+    response = requests.post(url, json={'email': email, 'password': password}, timeout=20)
     if response.status_code >= 400:
         if response.status_code == 422:
             try:
                 json = response.json()
             except ValueError:
-                json = dict()
+                json = {}
             if ('email' in json and isinstance(json['email'], list) and json['email']):
                 raise LoginError(json['email'][0])
         raise ValueError(f"Unexpected status code {response.status_code}")

@@ -153,7 +153,7 @@ class SearchItem:
     Search item in listing to start search dialog
     """
 
-    def to_directory_item(self):  # pylint: disable=no-self-use
+    def to_directory_item(self):
         """
         :return: directory item tuple
         """
