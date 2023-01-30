@@ -1,29 +1,27 @@
 """
 Module for all means TV api access
 """
-from __future__ import absolute_import
 import requests
+from resources.lib import helper
 
 from resources.lib.model import Video, Collection, ChapterVideo, Category
 
-_FASTLY_ORIGIN_HEADER = 'X-Fastly-Origin'
+_FASTLY_ORIGIN_HEADER_NAME = 'X-Fastly-Origin'
 _FASTLY_ORIGIN_HEADER_VALUE = 'meansmediatv'
-_MEANS_TV_BASE_URL = 'https://means.tv/api'
+_FASTLY_ORIGIN_HEADER = {_FASTLY_ORIGIN_HEADER_NAME: _FASTLY_ORIGIN_HEADER_VALUE}
+_MEANS_TV_BASE_URL_FASTLY = 'https://api-u-alpha.global.ssl.fastly.net/api'
+_MEANS_TV_BASE_URL_WEBSITE = 'https://means.tv/api'
 
 
 class LoginError(Exception):
     """
     Raised when login fails due to invalid credentials
     """
-    pass
-
 
 class ApiError(Exception):
     """
     Raised when the API behaves in some unexpected way
     """
-    pass
-
 
 def load_collection(permalink):
     """
@@ -31,44 +29,40 @@ def load_collection(permalink):
     :param permalink: permalink id of collection
     :return: :class: `Collection`
     """
-    url = _MEANS_TV_BASE_URL + '/contents/' + permalink
-    response = requests.get(url)
-    json = response.json()
+    url = _MEANS_TV_BASE_URL_FASTLY + '/contents/' + permalink
+    helper.log('load_collection', url)
+    json = _getJson(url)
     return Collection(json)
 
 
-def load_stream_url_of_chapter(chapter_id, token):
+def load_stream_url_of_chapter(content_id, chapter_id, token):
     """
     Loads the stream URL of a single chapter while being logged in
     :param chapter_id: id of single chapter
     :param token: login token
     :return: str
     """
-    url = _MEANS_TV_BASE_URL + '/chapters/?ids[]=' + str(chapter_id)
-    cookies = {'remember_user_token': token}
-    response = requests.get(url, cookies=cookies)
-    json = response.json()
-    if not json:
-        raise ValueError('Chapter {0} not found.'.format(str(chapter_id)))
-    if not json[0]['has_access']:
-        raise LoginError('Access denied to chapter {0}'.format(str(chapter_id)))
-    if not json[0]['subject']['versions']['hls']:
-        raise ValueError('No stream url found for chapter {0}'.format(str(chapter_id)))
-    return json[0]['subject']['versions']['hls']
+    chapters = load_chapters(content_id, token)
+    filtered = [c for c in chapters if str(c.id) == str(chapter_id)]
+    if len(filtered) == 0:
+        raise ValueError(f"Chapter {chapter_id} not found.")
+    if not filtered[0].has_access:
+        raise LoginError(f"Access denied to chapter {chapter_id}")
+    if not filtered[0].stream_url:
+        raise ValueError(f"No stream url found for chapter {chapter_id}")
+    return filtered[0].stream_url
 
-
-def load_chapters(chapters):
+def load_chapters(content_id, token = None):
     """
     load the chapter details from the API without being logged in
     :param chapters: list of chapter ids
+    :param token: login token
     :return: list of :class:`ChapterVideo`
     """
-    chapters_str = '&ids[]='.join(map(str, chapters))
-    url = _MEANS_TV_BASE_URL + '/chapters/?ids[]=' + chapters_str
-    response = requests.get(url)
-    json_list = response.json()
+    url = _MEANS_TV_BASE_URL_FASTLY + '/chapters/?content_id=' + str(content_id)
+    helper.log('load_chapters', url)
+    json_list = _getJson(url, token=token)
     return [ChapterVideo(item) for item in json_list if item['chapter_type'] == 'video']
-
 
 def load_category_contents(category_id):
     """
@@ -76,9 +70,9 @@ def load_category_contents(category_id):
     :param category_id: id of the category
     :return: mixed list of :class:`Collection` and :class:`Video`
     """
-    url = _MEANS_TV_BASE_URL + '/contents?type=category_preview&category_id=' + str(category_id)
-    response = requests.get(url)
-    json_list = response.json()
+    url = _MEANS_TV_BASE_URL_FASTLY + '/contents/search?category_id=' + str(category_id)
+    helper.log('load_category_contents', url)
+    json_list = _getJson(url)
     return [to_category_content(item) for item in json_list]
 
 
@@ -87,9 +81,9 @@ def load_categories():
     Load categories from API
     :return: list of :class:`Category`
     """
-    url = _MEANS_TV_BASE_URL + '/categories'
-    response = requests.get(url, headers={_FASTLY_ORIGIN_HEADER: _FASTLY_ORIGIN_HEADER_VALUE})
-    json_list = response.json()
+    url = _MEANS_TV_BASE_URL_FASTLY + '/categories'
+    helper.log('load_categories', url)
+    json_list = _getJson(url)
     return [Category(item) for item in json_list]
 
 
@@ -117,11 +111,18 @@ def _get_search_results_for_page(query, page):
     :return: list of json
     """
     params = {'search': query, 'page': page}
-    url = _MEANS_TV_BASE_URL + '/contents'
-    response = requests.get(url, params=params)
+    url = _MEANS_TV_BASE_URL_FASTLY + '/contents'
+    helper.log('_get_search_results_for_page', url)
+    return _getJson(url, params=params)
+
+
+def _getJson(url, params=None, token=None): # pylint: disable=invalid-name
+    params = params if params is not None else {}
+    cookies = {'remember_user_token': token} if token is not None else {}
+    response = requests.get(url, headers=_FASTLY_ORIGIN_HEADER, params=params, cookies=cookies, timeout=20)
     if response.status_code == 200:
         return response.json()
-    return ApiError("API returned unknown status code: {0}".format(response.status_code))
+    raise ApiError(f"API returned unknown status code: {response.status_code}")
 
 
 def get_token(email, password):
@@ -133,17 +134,18 @@ def get_token(email, password):
     :raises LoginError: when login failed due to invalid credentials
     :raises ValueError: when an unexpected status code is returned by API
     """
-    url = _MEANS_TV_BASE_URL + '/sessions'
-    response = requests.post(url, json={'email': email, 'password': password})
+    url = _MEANS_TV_BASE_URL_WEBSITE + '/sessions'
+    helper.log('get_token', url)
+    response = requests.post(url, json={'email': email, 'password': password}, timeout=20)
     if response.status_code >= 400:
         if response.status_code == 422:
             try:
                 json = response.json()
             except ValueError:
-                json = dict()
+                json = {}
             if ('email' in json and isinstance(json['email'], list) and json['email']):
                 raise LoginError(json['email'][0])
-        raise ValueError('Unexpected status code {0}'.format(str(response.status_code)))
+        raise ValueError(f"Unexpected status code {response.status_code}")
     return response.cookies['remember_user_token']
 
 

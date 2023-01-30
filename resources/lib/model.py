@@ -12,16 +12,17 @@ _ADDON = xbmcaddon.Addon()
 _URL = sys.argv[0]
 
 
-class Collection(object):
+class Collection:
     """
     The meta data of a collection
     """
     def __init__(self, json):
-        self.id = json['permalink']
+        self.id = json['id']
+        self.permalink = json['permalink']
         self.title = json['title']
         self.thumb = json['main_poster_featured']
         self.description = json['description']
-        self.chapter_ids = json['chapters'] if 'chapters' in json else []
+        self.chapter_ids = [cv['id'] for cv in json['children_videos']] if 'children_videos' in json else []
 
     def to_directory_item(self):
         """
@@ -33,7 +34,7 @@ class Collection(object):
         list_item.setArt({'thumb': self.thumb,
                           'icon': self.thumb,
                           'fanart': self.thumb})
-        url = _URL + '?show=collection&id=' + str(self.id)
+        url = _URL + '?show=collection&id=' + str(self.permalink)
         return url, list_item, True
 
     def clean_description(self):
@@ -43,18 +44,21 @@ class Collection(object):
         return formatting.clean_html(self.description)
 
 
-class ChapterVideo(object):
+class ChapterVideo:
     """
     The video chapter of a collection
     """
 
     def __init__(self, json):
         self.id = json['id']
+        self.collection_id = json['content_id']
         self.position = json['position']
         self.title = json['title']
         self.thumb = json['preview_image']
         self.duration = json['subject']['duration']
         self.description = json['description']
+        self.has_access = json['has_access']
+        self.stream_url = json['subject']['versions']['hls']
 
     def to_directory_item(self):
         """
@@ -69,7 +73,7 @@ class ChapterVideo(object):
                           'icon': self.thumb,
                           'fanart': self.thumb})
         list_item.setProperty('IsPlayable', 'true')
-        url = _URL + '?show=chapter_video&id=' + str(self.id)
+        url = _URL + '?show=chapter_video&coll=' + str(self.collection_id) + '&id=' + str(self.id)
         return url, list_item, False
 
     def duration_to_seconds(self):
@@ -85,7 +89,7 @@ class ChapterVideo(object):
         return formatting.clean_html(self.description)
 
 
-class Video(object):
+class Video:
     """
     A single video that is not part of any collection
     """
@@ -125,7 +129,7 @@ class Video(object):
         return formatting.clean_html(self.description)
 
 
-class Category(object):
+class Category:
     """
     Main category from the start page
     """
@@ -144,12 +148,12 @@ class Category(object):
         return url, list_item, True
 
 
-class SearchItem(object):
+class SearchItem:
     """
     Search item in listing to start search dialog
     """
 
-    def to_directory_item(self):  # pylint: disable=no-self-use
+    def to_directory_item(self):
         """
         :return: directory item tuple
         """

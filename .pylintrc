@@ -1,9 +1,7 @@
 [BASIC]
-
 good-names=id
-
 max-line-length=120
 
 [DESIGN]
-
+max-attributes=12
 min-public-methods=1

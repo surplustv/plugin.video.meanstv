@@ -1,7 +1,6 @@
 """
 Module to handle UI requests
 """
-from __future__ import absolute_import
 import sys
 
 import xbmc
@@ -21,7 +20,7 @@ _HANDLE = int(sys.argv[1])
 _ADDON = xbmcaddon.Addon()
 
 _STREAM_PROTOCOL = 'hls'
-_KODI_VERSION_MAJOR = int(xbmc.getInfoLabel('System.BuildVersion').split('.')[0])
+_KODI_VERSION_MAJOR = int(xbmc.getInfoLabel('System.BuildVersion').split('.', maxsplit=1)[0])
 
 if _KODI_VERSION_MAJOR >= 19:
     _INPUTSTREAM_PROPERTY = 'inputstream'
@@ -35,10 +34,10 @@ def show_video(permalink):
     :param permalink: permalink id of the video
     """
     collection = api.load_collection(permalink)
-    show_chapter_video(collection.chapter_ids[0])
+    show_chapter_video(collection.id, collection.chapter_ids[0])
 
 
-def show_chapter_video(chapter_id):
+def show_chapter_video(collection_id, chapter_id):
     """
     Show a video that is a chapter in the collection in kodi
     :param chapter_id: id of the chapter in the collection
@@ -46,7 +45,7 @@ def show_chapter_video(chapter_id):
     helper.log('Play Chapter - ID', chapter_id)
     url = None
     try:
-        url = _get_stream_url(chapter_id)
+        url = _get_stream_url(collection_id, chapter_id)
         helper.log('Play Chapter - URL', url)
         if url:
             _play(url)
@@ -54,16 +53,17 @@ def show_chapter_video(chapter_id):
         helper.show_error_notification(str(err), _ADDON.getLocalizedString(30120))
 
 
-def _get_stream_url(chapter_id):
+def _get_stream_url(collection_id, chapter_id):
     """
     Tries to get the stream url of a chapter. If first try fails, tries to re-login (stored credentials and/or dialog)
      and tries to get the url again.
+    :param collection_id: content id of the collection to which the chapter belongs
     :param chapter_id: chapter id
     :return stream url or None if not successful at all
     """
     try:
         token = settings.get_token()
-        return api.load_stream_url_of_chapter(chapter_id, token)
+        return api.load_stream_url_of_chapter(collection_id, chapter_id, token)
     except api.LoginError:
         settings.set_token('')
         login.login_with_stored_credentials()
@@ -72,7 +72,7 @@ def _get_stream_url(chapter_id):
             login.show_login_dialog()
             token = settings.get_token()
         if token:
-            return api.load_stream_url_of_chapter(chapter_id, token)
+            return api.load_stream_url_of_chapter(collection_id, chapter_id, token)
         return None
 
 
@@ -82,7 +82,7 @@ def _play(url):
     :param url: stream url
     :raise ImportError
     """
-    import inputstreamhelper # pylint: disable=import-error
+    import inputstreamhelper # pylint: disable=import-error, import-outside-toplevel
     is_helper = inputstreamhelper.Helper('mpd', drm='widevine')
     if is_helper.check_inputstream():
         play_item = xbmcgui.ListItem(path=url)
@@ -101,7 +101,7 @@ def list_collection(permalink):
     xbmcplugin.setPluginCategory(_HANDLE, _ADDON.getLocalizedString(30121))
     xbmcplugin.setContent(_HANDLE, 'videos')
     collection = api.load_collection(permalink)
-    videos = api.load_chapters(collection.chapter_ids)
+    videos = api.load_chapters(collection.id)
     for video in videos:
         if not video.description:
             video.description = collection.description

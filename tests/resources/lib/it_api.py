@@ -9,33 +9,33 @@ class LoadChapterIdsForCollectionIntegrationTestCase(TestCase):
     def test_laughter_against_the_machine(self):
         # Collection: https://means.tv/programs/latm?categoryId=20473
         collection = load_collection('latm')
-        self.assertEquals(collection.id, 'latm')
-        self.assertEquals(collection.title, 'Laughter Against The Machine')
+        self.assertEqual(collection.id, 572687)
+        self.assertEqual(collection.title, 'Laughter Against The Machine')
         self.assertTrue(collection.thumb)
         self.assertTrue(collection.clean_description().startswith('Laughter Against The Machine'))
-        self.assertEquals(collection.chapter_ids, [1119397, 1119398, 1119399, 1119400, 1119401, 1119402, 1119404])
+        self.assertEqual(collection.chapter_ids, [572685, 572684, 572683, 572680, 572686, 572681, 572688])
 
 
 class LoadChapterDetailsIntegrationTestCase(TestCase):
 
     def test_laughter_against_the_machine(self):
         # Chapters: https://means.tv/programs/latm?categoryId=20473
-        chapters = load_chapters([1119397, 1119398, 1119399, 1119400, 1119401, 1119402, 1119404])
-        self.assertEquals(len(chapters), 7)
-        self.assertEquals(chapters[0].title, 'Episode 1 - Arizona')
-        self.assertEquals(chapters[0].position, 1)
-        self.assertEquals(chapters[1].title, 'Episode 2 -  Chicago')
-        self.assertEquals(chapters[1].position, 2)
-        self.assertEquals(chapters[2].title, 'Episode 3 - Dearborn')
-        self.assertEquals(chapters[2].position, 3)
-        self.assertEquals(chapters[3].title, 'Episode 4 - Wisconsin')
-        self.assertEquals(chapters[3].position, 4)
-        self.assertEquals(chapters[4].title, 'Episode 5 - NYC & DC')
-        self.assertEquals(chapters[4].position, 5)
-        self.assertEquals(chapters[5].title, 'Episode 6 - New Orleans')
-        self.assertEquals(chapters[5].position, 6)
-        self.assertEquals(chapters[6].title, 'Episode 7 - Oakland')
-        self.assertEquals(chapters[6].position, 7)
+        chapters = load_chapters(572687)
+        self.assertEqual(len(chapters), 7)
+        self.assertEqual(chapters[0].title, 'Episode 1 - Arizona')
+        self.assertEqual(chapters[0].position, 1)
+        self.assertEqual(chapters[1].title, 'Episode 2 -  Chicago')
+        self.assertEqual(chapters[1].position, 2)
+        self.assertEqual(chapters[2].title, 'Episode 3 - Dearborn')
+        self.assertEqual(chapters[2].position, 3)
+        self.assertEqual(chapters[3].title, 'Episode 4 - Wisconsin')
+        self.assertEqual(chapters[3].position, 4)
+        self.assertEqual(chapters[4].title, 'Episode 5 - NYC & DC')
+        self.assertEqual(chapters[4].position, 5)
+        self.assertEqual(chapters[5].title, 'Episode 6 - New Orleans')
+        self.assertEqual(chapters[5].position, 6)
+        self.assertEqual(chapters[6].title, 'Episode 7 - Oakland')
+        self.assertEqual(chapters[6].position, 7)
 
 
 class GetTokenTestCase(TestCase):
@@ -50,20 +50,23 @@ class GetTokenTestCase(TestCase):
 class LoadStreamUrlOfChapter(TestCase):
     
     def test_illegal_chapter(self):
-        self.assertRaises(ValueError, lambda: load_stream_url_of_chapter(0, ''))
+        content_id = 572687
+        self.assertRaises(ValueError, lambda: load_stream_url_of_chapter(content_id, 0, ''))
     
     def test_no_token(self):
         # Chapter: https://means.tv/programs/jposadas
-        chapter = 1206515
-        self.assertRaises(LoginError, lambda: load_stream_url_of_chapter(chapter, 'xxx'))
-        self.assertRaises(LoginError, lambda: load_stream_url_of_chapter(chapter, ''))
-        self.assertRaises(LoginError, lambda: load_stream_url_of_chapter(chapter, None))
+        content_id = 572687
+        chapter = 1119398
+        self.assertRaises(LoginError, lambda: load_stream_url_of_chapter(content_id, chapter, 'xxx'))
+        self.assertRaises(LoginError, lambda: load_stream_url_of_chapter(content_id, chapter, ''))
+        self.assertRaises(LoginError, lambda: load_stream_url_of_chapter(content_id, chapter, None))
     
     def test_old_token(self):
         # Chapter: https://means.tv/programs/jposadas
-        chapter = 1206515
+        content_id = 572687
+        chapter = 1119398
         old_token = 'W1szODU1NTI0XSwiJDJhJDEwJEN6VWtDSFFneWRJSzhHZUx6ak0vVWUiLCIxNTk5NDExMTI1LjE4ODkxOTUiXQ%3D%3D--bd84f8019a8dff072dc6a71a52cba035483d6331'
-        self.assertRaises(LoginError, lambda: load_stream_url_of_chapter(chapter, old_token))
+        self.assertRaises(LoginError, lambda: load_stream_url_of_chapter(content_id, chapter, old_token))
 
 
 class LoadCategories(TestCase):

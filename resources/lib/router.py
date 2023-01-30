@@ -30,7 +30,7 @@ def route(paramstring):
         elif params['show'] == 'video':
             handler.show_video(params['id'])
         elif params['show'] == 'chapter_video':
-            handler.show_chapter_video(params['id'])
+            handler.show_chapter_video(params['coll'], params['id'])
         elif params['show'] == 'search':
             handler.search()
         elif params['show'] == 'login':
@@ -40,6 +40,6 @@ def route(paramstring):
         elif params['show'] == 'delete_password':
             handler.delete_password()
         else:
-            raise ValueError('Invalid paramstring: {0}!'.format(paramstring))
+            raise ValueError(f"Invalid paramstring: {paramstring}!")
     else:
         handler.list_categories()
