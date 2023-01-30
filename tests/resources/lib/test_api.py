@@ -27,9 +27,9 @@ class LoadChapterIdsForCollectionTestCase(TestCase):
         self.assertTrue(isinstance(collection, Collection))
         self.assertEqual(collection.id, 572687)
         self.assertEqual(collection.title, 'Laughter Against The Machine')
-        self.assertEqual(collection.thumb, 'https://dtsvkkjw40x57.cloudfront.net/images/programs/572687/horizontal/big_7507_2Fcatalog_image_2F572687_2FKCnCnqiQlimDLVneahyy_LATM_Thumbnails_3.png')
+        self.assertEqual(collection.thumb, 'https://alpha.uscreencdn.com/images/programs/572687/horizontal/big_7507_2Fcatalog_image_2F572687_2FE6uopBSAQHKqm91hLvyG_LATM_20ORIGINAL_20CORNER_202.jpg')
         self.assertTrue(collection.clean_description().startswith('Laughter Against The Machine'))
-        self.assertEqual(collection.chapter_ids, [1119397, 1119398, 1119399, 1119400, 1119401, 1119402, 1119404])
+        self.assertEqual(collection.chapter_ids, [572685, 572684, 572683, 572680, 572686, 572681, 572688])
 
 
 class LoadChapterDetailsTestCase(TestCase):
