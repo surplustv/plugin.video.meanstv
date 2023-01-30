@@ -22,10 +22,10 @@ class LoadChapterIdsForCollectionTestCase(TestCase):
         # https://means.tv/programs/latm?categoryId=20473
         with open(_LATM_CONTENTS_JSON, "r") as response_file:
             response_json = json.load(response_file)
-            m.get('https://means.tv/api/contents/latm', json=response_json)
+            m.get('https://api-u-alpha.global.ssl.fastly.net/api/contents/latm', json=response_json)
         collection = load_collection('latm')
         self.assertTrue(isinstance(collection, Collection))
-        self.assertEqual(collection.id, 'latm')
+        self.assertEqual(collection.id, 572687)
         self.assertEqual(collection.title, 'Laughter Against The Machine')
         self.assertEqual(collection.thumb, 'https://dtsvkkjw40x57.cloudfront.net/images/programs/572687/horizontal/big_7507_2Fcatalog_image_2F572687_2FKCnCnqiQlimDLVneahyy_LATM_Thumbnails_3.png')
         self.assertTrue(collection.clean_description().startswith('Laughter Against The Machine'))
@@ -39,7 +39,7 @@ class LoadChapterDetailsTestCase(TestCase):
         # https://means.tv/programs/latm?categoryId=20473
         with open(_LATM_CHAPTERS_JSON, "r") as response_file:
             response_json = json.load(response_file)
-            m.get('https://means.tv/api/chapters/?ids%5B%5D=1119397&ids%5B%5D=1119398&ids%5B%5D=1119399&ids%5B%5D=1119400&ids%5B%5D=1119401&ids%5B%5D=1119402&ids%5B%5D=1119404&ids%5B%5D=1711409',
+            m.get('https://api-u-alpha.global.ssl.fastly.net/api/chapters/?content_id=%5B1119397,%201119398,%201119399,%201119400,%201119401,%201119402,%201119404,%201711409%5D',
                   json=response_json)
         chapters = load_chapters([1119397, 1119398, 1119399, 1119400, 1119401, 1119402, 1119404, 1711409])
         self.assertEqual(len(chapters), 7)
@@ -65,13 +65,13 @@ class SearchTestCase(TestCase):
     def test_search(self, m):
         with open(_SEARCH_RESULTS_1_JSON, "r") as response_file:
             response_json = json.load(response_file)
-            m.get('https://means.tv/api/contents?search=left&page=1', json=response_json)
+            m.get('https://api-u-alpha.global.ssl.fastly.net/api/contents?search=left&page=1', json=response_json)
         with open(_SEARCH_RESULTS_2_JSON, "r") as response_file:
             response_json = json.load(response_file)
-            m.get('https://means.tv/api/contents?search=left&page=2', json=response_json)
+            m.get('https://api-u-alpha.global.ssl.fastly.net/api/contents?search=left&page=2', json=response_json)
         with open(_SEARCH_RESULTS_3_JSON, "r") as response_file:
             response_json = json.load(response_file)
-            m.get('https://means.tv/api/contents?search=left&page=3', json=response_json)
+            m.get('https://api-u-alpha.global.ssl.fastly.net/api/contents?search=left&page=3', json=response_json)
         search_results = get_search_results('left')
         self.assertEqual(len(search_results), 2)
         self.assertTrue(isinstance(search_results[0], Collection))
